@@ -46,7 +46,7 @@ def salvar_csv(df, path):
 
 
 if __name__ == "__main__":
-    N_AMOSTRAS = 100000
+    N_AMOSTRAS = 200000
 
     df = gerar_dataset(N_AMOSTRAS)
 
