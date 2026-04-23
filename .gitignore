@@ -11,3 +11,7 @@ data/processed/*.parquet
 # MLflow
 mlflow.db
 mlruns/
+
+# tests
+coverage.xml
+.coverage
