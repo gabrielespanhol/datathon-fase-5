@@ -15,7 +15,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-
 DATA_PATH = Path("data/processed/features.parquet")
 TARGET_COL = "fraude"
 EXPERIMENT_NAME = "fraude-baseline"

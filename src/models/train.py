@@ -2,7 +2,6 @@ import logging
 
 from src.models.baseline import run_baseline
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
