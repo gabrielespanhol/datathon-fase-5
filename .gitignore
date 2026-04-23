@@ -18,3 +18,7 @@ coverage.xml
 
 DONE.md
 METAs.md
+
+dist/
+.ruff_cache
+.pytest_cache
