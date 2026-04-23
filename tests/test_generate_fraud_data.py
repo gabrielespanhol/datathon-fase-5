@@ -1,8 +1,9 @@
-import pytest
 import os
+from unittest.mock import MagicMock, patch
+
 import pandas as pd
-from unittest.mock import patch, MagicMock
-from src.scripts.generate_fraud_data import gerar_transacao, gerar_dataset, salvar_csv
+
+from src.scripts.generate_fraud_data import gerar_dataset, gerar_transacao, salvar_csv
 
 ## 1. Testes de Unidade com Mock (Cobre todas as linhas da lógica de score)
 

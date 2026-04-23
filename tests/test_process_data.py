@@ -1,10 +1,10 @@
 import os
-import pytest
 from unittest.mock import patch
+
 import pandas as pd
+import pytest
+
 from src.scripts.process_data import main
-import importlib
-import src.scripts.process_data as process_data
 
 
 ## 1. Teste de Sucesso do Fluxo Principal
