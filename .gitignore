@@ -6,3 +6,7 @@ __pycache__/
 .venv
 
 data/raw/*
+
+# MLflow
+mlflow.db
+mlruns/
