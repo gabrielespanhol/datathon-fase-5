@@ -97,7 +97,7 @@ def run_baseline(data_path: Path = DATA_PATH) -> dict[str, float]:
         mlflow.log_param("n_features", X_train.shape[1])
 
         mlflow.log_metrics(metrics)
-        mlflow.sklearn.log_model(model, artifact_path="model")
+        mlflow.sklearn.log_model(model, name="model")
 
         return metrics
 

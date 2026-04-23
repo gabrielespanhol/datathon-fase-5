@@ -1,0 +1,37 @@
+schema: '2.0'
+stages:
+  process:
+    cmd: python -m src.scripts.process_data
+    deps:
+    - path: data/raw/fraud_dataset_20260421_232806.csv
+      hash: md5
+      md5: 64c8662dfbf40ddc40705c1b1a911b48
+      size: 5621401
+    - path: src/features/feature_engineering.py
+      hash: md5
+      md5: 88a0b6c115637fa18c6ae9875ee12c24
+      size: 1035
+    - path: src/scripts/process_data.py
+      hash: md5
+      md5: e5fc3fec3c33e809ace95d2a99b8cf30
+      size: 479
+    outs:
+    - path: data/processed/features.parquet
+      hash: md5
+      md5: c6b64229b547cf179451e4a7e1061095
+      size: 3490324
+  train:
+    cmd: python -m src.models.train
+    deps:
+    - path: data/processed/features.parquet
+      hash: md5
+      md5: c6b64229b547cf179451e4a7e1061095
+      size: 3490324
+    - path: src/models/baseline.py
+      hash: md5
+      md5: 8b23baf6d5aceb2523d229bb02973d0d
+      size: 3040
+    - path: src/models/train.py
+      hash: md5
+      md5: 34ce131004b4f54fda0121a2d1d6f650
+      size: 518

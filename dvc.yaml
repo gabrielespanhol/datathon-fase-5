@@ -1,0 +1,16 @@
+stages:
+  process:
+    cmd: python -m src.scripts.process_data
+    deps:
+      - data/raw/fraud_dataset_20260421_232806.csv
+      - src/scripts/process_data.py
+      - src/features/feature_engineering.py
+    outs:
+      - data/processed/features.parquet
+
+  train:
+    cmd: python -m src.models.train
+    deps:
+      - data/processed/features.parquet
+      - src/models/baseline.py
+      - src/models/train.py

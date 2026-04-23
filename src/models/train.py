@@ -1,17 +1,22 @@
-import pandas as pd
+import logging
 
-from src.features.feature_engineering import build_features
 from src.models.baseline import run_baseline
 
 
-def train():
-    df = pd.read_csv("data/raw/fraud_dataset_20260421_232806.csv")
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    df = build_features(df)
 
-    df.to_parquet("data/processed/features.parquet", index=False)
+def train() -> dict[str, float]:
+    """Executa o treinamento do modelo baseline e retorna as métricas."""
+    logger.info("Iniciando treinamento do modelo baseline...")
 
-    return run_baseline()
+    metrics = run_baseline()
+
+    logger.info("Treinamento concluído.")
+    logger.info("Métricas: %s", metrics)
+
+    return metrics
 
 
 if __name__ == "__main__":
