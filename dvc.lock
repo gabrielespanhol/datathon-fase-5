@@ -3,35 +3,55 @@ stages:
   process:
     cmd: python -m src.scripts.process_data
     deps:
-    - path: data/raw/fraud_dataset_20260421_232806.csv
+    - path: data/raw/fraud_dataset.csv
       hash: md5
-      md5: 64c8662dfbf40ddc40705c1b1a911b48
-      size: 5621401
+      md5: 4ceab9485db29ce76d3e536de75395f7
+      size: 5622303
     - path: src/features/feature_engineering.py
       hash: md5
       md5: 88a0b6c115637fa18c6ae9875ee12c24
       size: 1035
     - path: src/scripts/process_data.py
       hash: md5
-      md5: e5fc3fec3c33e809ace95d2a99b8cf30
-      size: 479
+      md5: 2e7e09f4949e127bec77ca12c33280fd
+      size: 694
     outs:
     - path: data/processed/features.parquet
       hash: md5
-      md5: c6b64229b547cf179451e4a7e1061095
-      size: 3490324
+      md5: 80cf585898b6fe4078679ca2cb23b51c
+      size: 3487802
   train:
     cmd: python -m src.models.train
     deps:
     - path: data/processed/features.parquet
       hash: md5
-      md5: c6b64229b547cf179451e4a7e1061095
-      size: 3490324
+      md5: 80cf585898b6fe4078679ca2cb23b51c
+      size: 3487802
+    - path: data/raw/dataset_metadata.json
+      hash: md5
+      md5: f3e3af4a9387191708cec36a47c3d670
+      size: 200
     - path: src/models/baseline.py
       hash: md5
-      md5: 8b23baf6d5aceb2523d229bb02973d0d
-      size: 3040
+      md5: 97027bff5393a9f01fecc5b11cd826dd
+      size: 4744
     - path: src/models/train.py
       hash: md5
-      md5: 34ce131004b4f54fda0121a2d1d6f650
-      size: 518
+      md5: 29686719733c26ef465ecaac30f01b56
+      size: 2422
+  generate_data:
+    cmd: python -m src.scripts.generate_fraud_data
+    deps:
+    - path: src/scripts/generate_fraud_data.py
+      hash: md5
+      md5: 86dffd7d42e392143faedc8be93c14ce
+      size: 2192
+    outs:
+    - path: data/raw/dataset_metadata.json
+      hash: md5
+      md5: f3e3af4a9387191708cec36a47c3d670
+      size: 200
+    - path: data/raw/fraud_dataset.csv
+      hash: md5
+      md5: 4ceab9485db29ce76d3e536de75395f7
+      size: 5622303

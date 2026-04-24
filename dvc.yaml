@@ -1,8 +1,16 @@
 stages:
+  generate_data:
+    cmd: python -m src.scripts.generate_fraud_data
+    deps:
+      - src/scripts/generate_fraud_data.py
+    outs:
+      - data/raw/fraud_dataset.csv
+      - data/raw/dataset_metadata.json
+
   process:
     cmd: python -m src.scripts.process_data
     deps:
-      - data/raw/fraud_dataset_20260421_232806.csv
+      - data/raw/fraud_dataset.csv
       - src/scripts/process_data.py
       - src/features/feature_engineering.py
     outs:
@@ -12,5 +20,6 @@ stages:
     cmd: python -m src.models.train
     deps:
       - data/processed/features.parquet
+      - data/raw/dataset_metadata.json
       - src/models/baseline.py
       - src/models/train.py

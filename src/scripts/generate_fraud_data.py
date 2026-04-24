@@ -1,8 +1,15 @@
+import hashlib
+import json
 import os
 import random
 from datetime import datetime
+from pathlib import Path
 
 import pandas as pd
+
+OUTPUT_PATH = "data/raw/fraud_dataset.csv"
+N_AMOSTRAS = 200000
+RANDOM_SEED = 42
 
 
 def gerar_transacao():
@@ -14,7 +21,6 @@ def gerar_transacao():
 
     score = 0
 
-    # Regras de risco
     if valor > 1000:
         score += 1
     if hora > 22 or hora < 6:
@@ -36,26 +42,49 @@ def gerar_transacao():
     }
 
 
-def gerar_dataset(n):
+def gerar_dataset(n: int) -> pd.DataFrame:
     return pd.DataFrame([gerar_transacao() for _ in range(n)])
 
 
-def salvar_csv(df, path):
+def salvar_csv(df: pd.DataFrame, path: str) -> None:
     os.makedirs(os.path.dirname(path), exist_ok=True)
     df.to_csv(path, index=False)
 
 
-if __name__ == "__main__":
-    N_AMOSTRAS = 200000
+def file_md5(path: str) -> str:
+    hash_md5 = hashlib.md5()
 
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            hash_md5.update(chunk)
+
+    return hash_md5.hexdigest()
+
+
+def main() -> None:
     df = gerar_dataset(N_AMOSTRAS)
+    salvar_csv(df, OUTPUT_PATH)
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_path = f"data/raw/fraud_dataset_{timestamp}.csv"
+    data_hash = file_md5(OUTPUT_PATH)
 
-    salvar_csv(df, output_path)
+    metadata = {
+        "data_version": data_hash,
+        "generated_at": datetime.utcnow().isoformat(),
+        "n_rows": len(df),
+        "fraud_rate": float(df["fraude"].mean()),
+        "raw_path": OUTPUT_PATH,
+    }
+
+    metadata_path = Path("data/raw/dataset_metadata.json")
+    metadata_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(metadata_path, "w") as f:
+        json.dump(metadata, f, indent=2)
 
     print(f"Dataset gerado com {len(df)} linhas")
-    print(f"Salvo em: {output_path}")
-    print("\nDistribuição de fraude:")
-    print(df["fraude"].value_counts(normalize=True))
+    print(f"Data version: {data_hash}")
+    print(f"Salvo em: {OUTPUT_PATH}")
+
+
+if __name__ == "__main__":
+    main()

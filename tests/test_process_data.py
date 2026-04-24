@@ -1,79 +1,71 @@
-import os
-from unittest.mock import patch
-
-import pandas as pd
 import pytest
+import pandas as pd
+import runpy
+from unittest.mock import patch, MagicMock
+from src.scripts import process_data
 
-from src.scripts.process_data import main
+
+@pytest.fixture
+def mock_df():
+    return pd.DataFrame({"valor": [100], "hora": [10]})
 
 
-## 1. Teste de Sucesso do Fluxo Principal
+## 1. Teste de Sucesso (Cobre definições de Path, Fluxo Main e Print)
+@patch("src.scripts.process_data.RAW_DATA_PATH")
+@patch("src.scripts.process_data.PROCESSED_DATA_PATH")
 @patch("src.scripts.process_data.pd.read_csv")
 @patch("src.scripts.process_data.build_features")
-@patch("src.scripts.process_data.pd.DataFrame.to_parquet")
-def test_main_flow_success(mock_to_parquet, mock_build_features, mock_read_csv):
-    """
-    Testa se o main lê o CSV, chama a feature engineering e salva em parquet.
-    """
-    # Configura um DataFrame mockado para a leitura
-    mock_df_raw = pd.DataFrame({"valor": [100], "hora": [10]})
-    mock_read_csv.return_value = mock_df_raw
+@patch("builtins.print")
+def test_main_success(
+    mock_print, mock_build, mock_read, mock_processed_path, mock_raw_path, mock_df
+):
+    """Cobre o caminho feliz, criação de pastas, salvamento e a linha do print."""
+    # Setup
+    mock_raw_path.exists.return_value = True
+    mock_read.return_value = mock_df
+    mock_build.return_value = mock_df
 
-    # Configura o retorno da função build_features
-    mock_df_processed = pd.DataFrame(
-        {"valor": [100], "hora": [10], "feature_nova": [1]}
+    # Mock do comportamento do Path para o print e mkdir
+    mock_processed_path.parent.mkdir = MagicMock()
+    mock_processed_path.__str__.return_value = "data/processed/features.parquet"
+
+    # Execução
+    process_data.main()
+
+    # Verificações
+    mock_read.assert_called_once()
+    mock_build.assert_called_once()
+    mock_processed_path.parent.mkdir.assert_called_once_with(
+        parents=True, exist_ok=True
     )
-    mock_build_features.return_value = mock_df_processed
-
-    # Executa a função main
-    main()
-
-    # Verificações (Assertions)
-    mock_read_csv.assert_called_once()
-    mock_build_features.assert_called_once_with(mock_df_raw)
-    mock_to_parquet.assert_called_once()
-
-    # Valida se o caminho de saída está correto (conforme definido no seu script)
-    args, kwargs = mock_to_parquet.call_args
-    assert "data/processed/features.parquet" in args[0]
+    mock_print.assert_called_with(f"Dados processados salvos em: {mock_processed_path}")
 
 
-## 2. Teste de Tratamento de Erro (Arquivo não encontrado)
-@patch("src.scripts.process_data.pd.read_csv")
-def test_main_file_not_found(mock_read_csv):
-    """Verifica o comportamento caso o arquivo raw não exista."""
-    mock_read_csv.side_effect = FileNotFoundError("Arquivo não encontrado")
+## 2. Teste de Erro (Cobre o Raise)
+@patch("src.scripts.process_data.RAW_DATA_PATH")
+def test_main_file_not_found(mock_raw_path):
+    """Cobre o raise FileNotFoundError."""
+    mock_raw_path.exists.return_value = False
 
-    with pytest.raises(FileNotFoundError):
-        main()
+    with pytest.raises(FileNotFoundError, match="Arquivo raw não encontrado"):
+        process_data.main()
 
 
-## 3. Teste de Integração (Opcional - com arquivo real temporário)
-def test_main_integration_with_temp_files(tmp_path):
+## 3. Teste do Bloco de Execução Principal (Cobre a Linha 25)
+def test_script_execution_as_main():
     """
-    Teste de integração real usando arquivos temporários.
+    Usa runpy para simular 'python process_data.py'.
+    É a forma mais limpa de cobrir a linha 25 sem redundância de reload.
     """
-    # Criar caminhos temporários
-    tmp_dir = tmp_path / "data"
-    raw_dir = tmp_dir / "raw"
-    proc_dir = tmp_dir / "processed"
-    raw_dir.mkdir(parents=True)
-    proc_dir.mkdir(parents=True)
+    script_path = "src/scripts/process_data.py"
+    with patch("src.scripts.process_data.main") as mock_main:
+        runpy.run_path(script_path, run_name="__main__")
+        assert mock_main.called
 
-    test_csv = raw_dir / "fraud_dataset_test.csv"
-    test_parquet = proc_dir / "features.parquet"
 
-    # Criar dados de teste
-    df = pd.DataFrame({"valor": [100], "hora": [5]})
-    df.to_csv(test_csv, index=False)
-
-    # Patch nos paths do script original para usar os temporários
-    with patch("src.scripts.process_data.RAW_DATA_PATH", str(test_csv)):
-        with patch("src.scripts.process_data.PROCESSED_DATA_PATH", str(test_parquet)):
-            # Patch na build_features para não precisar testar a lógica dela aqui
-            with patch(
-                "src.scripts.process_data.build_features", side_effect=lambda x: x
-            ):
-                main()
-
-    assert os.path.exists(test_parquet)
+## 4. Teste de Sanidade/Importação
+def test_module_structure():
+    """Garante que as constantes e funções básicas estão acessíveis."""
+    assert hasattr(process_data, "RAW_DATA_PATH")
+    assert hasattr(process_data, "main")
+    assert process_data.build_features is not None

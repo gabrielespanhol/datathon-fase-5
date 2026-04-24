@@ -1,3 +1,6 @@
+import json
+import logging
+import os
 from pathlib import Path
 
 import mlflow
@@ -19,10 +22,18 @@ DATA_PATH = Path("data/processed/features.parquet")
 TARGET_COL = "fraude"
 EXPERIMENT_NAME = "fraude-baseline"
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 def load_data(data_path: Path = DATA_PATH) -> pd.DataFrame:
     """Carrega os dados processados."""
     return pd.read_parquet(data_path)
+
+
+def load_dataset_metadata(path: Path = Path("data/raw/dataset_metadata.json")) -> dict:
+    with open(path) as f:
+        return json.load(f)
 
 
 def split_data(
@@ -59,14 +70,9 @@ def compute_metrics(
     }
 
 
-def run_baseline(data_path: Path = DATA_PATH) -> dict[str, float]:
-    """Executa o baseline com Regressão Logística e registra no MLflow."""
-    mlflow.set_experiment(EXPERIMENT_NAME)
-
-    df = load_data(data_path)
-    X_train, X_test, y_train, y_test = split_data(df)
-
-    model = Pipeline(
+def build_model() -> Pipeline:
+    """Cria pipeline do modelo baseline."""
+    return Pipeline(
         steps=[
             ("scaler", StandardScaler()),
             (
@@ -80,25 +86,79 @@ def run_baseline(data_path: Path = DATA_PATH) -> dict[str, float]:
         ]
     )
 
-    with mlflow.start_run(run_name="logistic_regression"):
+
+def set_standard_tags():
+    """Define metadata padronizada do modelo."""
+    mlflow.set_tag("model_name", "fraud_detection")
+    mlflow.set_tag("model_version", "v1")
+    mlflow.set_tag("model_type", "classification")
+    mlflow.set_tag("owner", "grupo-xx")
+    mlflow.set_tag("risk_level", "high")
+    mlflow.set_tag("git_sha", os.getenv("GIT_SHA", "dev"))
+
+
+def run_baseline(data_path: Path = DATA_PATH) -> dict[str, float]:
+    """
+    Executa baseline com Regressão Logística,
+    com tracking + registry + governança.
+    """
+
+    logger.info("Iniciando treinamento baseline...")
+
+    mlflow.set_experiment(EXPERIMENT_NAME)
+
+    df = load_data(data_path)
+    X_train, X_test, y_train, y_test = split_data(df)
+
+    model = build_model()
+
+    dataset_metadata = load_dataset_metadata()
+
+    with mlflow.start_run(run_name="logistic_regression_v1"):
+
+        # 🔥 Metadata padronizada
+        set_standard_tags()
+
+        # Treino
         model.fit(X_train, y_train)
 
+        # Predição
         y_pred = model.predict(X_test)
         y_score = model.predict_proba(X_test)[:, 1]
 
+        # Métricas
         metrics = compute_metrics(y_test, y_pred, y_score)
 
-        mlflow.log_param("model_name", "logistic_regression")
-        mlflow.log_param("test_size", 0.2)
-        mlflow.log_param("random_state", 42)
-        mlflow.log_param("n_samples_train", len(X_train))
-        mlflow.log_param("n_samples_test", len(X_test))
-        mlflow.log_param("n_features", X_train.shape[1])
+        # Params organizados
+        mlflow.log_params(
+            {
+                "model_name": "logistic_regression",
+                "test_size": 0.2,
+                "random_state": 42,
+                "n_samples_train": len(X_train),
+                "n_samples_test": len(X_test),
+                "n_features": X_train.shape[1],
+                "training_data_version": dataset_metadata["data_version"],
+                "training_data_rows": dataset_metadata["n_rows"],
+                "training_data_fraud_rate": dataset_metadata["fraud_rate"],
+            }
+        )
 
+        mlflow.set_tag("training_data_version", dataset_metadata["data_version"])
+        mlflow.set_tag("training_data_path", dataset_metadata["raw_path"])
+
+        # Log métricas
         mlflow.log_metrics(metrics)
-        mlflow.sklearn.log_model(model, name="model")
 
-        return metrics
+        # 🔥 REGISTRO DO MODELO (ESSENCIAL)
+        mlflow.sklearn.log_model(
+            model, name="model", registered_model_name="fraud_detection"
+        )
+
+        logger.info("Treinamento concluído.")
+        logger.info("Métricas: %s", metrics)
+
+        return metrics, model, X_test, y_test
 
 
 if __name__ == "__main__":

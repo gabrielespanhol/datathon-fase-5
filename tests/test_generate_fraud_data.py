@@ -3,7 +3,14 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 
-from src.scripts.generate_fraud_data import gerar_dataset, gerar_transacao, salvar_csv
+import json
+from src.scripts.generate_fraud_data import (
+    gerar_dataset,
+    gerar_transacao,
+    salvar_csv,
+    file_md5,
+    main,
+)
 
 ## 1. Testes de Unidade com Mock (Cobre todas as linhas da lógica de score)
 
@@ -97,3 +104,115 @@ def test_limites_dos_dados_estatisticos():
         assert 10 <= res["valor"] <= 5000
         assert 0 <= res["hora"] <= 23
         assert 0 <= res["distancia_km"] <= 2000
+
+
+## 1. Teste da função file_md5
+def test_file_md5(tmp_path):
+    """Cobre a lógica de geração de hash MD5 do arquivo."""
+    test_file = tmp_path / "test.txt"
+    test_file.write_text("conteudo de teste")
+
+    hash_result = file_md5(str(test_file))
+
+    # O hash MD5 de 'conteudo de teste' é fixo
+    assert isinstance(hash_result, str)
+    assert len(hash_result) == 32
+    assert hash_result == "9895c1f54924294b059364669819777f"
+
+
+## 2. Teste de Integração da função Main (Cobre as linhas 65-86 e 90)
+@patch("src.scripts.generate_fraud_data.N_AMOSTRAS", 10)
+@patch("src.scripts.generate_fraud_data.OUTPUT_PATH")
+def test_main_full_execution(mock_output_path, tmp_path):
+    """
+    Executa a função main real para cobrir a criação de metadados e prints.
+    Usa caminhos temporários para não sujar o ambiente de desenvolvimento.
+    """
+    # Configura caminhos temporários
+    fake_csv = tmp_path / "fraud_test.csv"
+    mock_output_path.__str__.return_value = str(fake_csv)
+
+    # Patch no Path do metadata para salvar no tmp_path
+    fake_metadata = tmp_path / "metadata.json"
+
+    with patch("src.scripts.generate_fraud_data.Path") as mock_path:
+        # Configura o mock do Path para retornar nosso caminho temporário
+        mock_path.return_value = fake_metadata
+        # Garante que as propriedades do Path funcionem no main
+        mock_path.return_value.parent = tmp_path
+
+        # Executa o main
+        main()
+
+    # Verificações
+    assert fake_csv.exists(), "O arquivo CSV deveria ter sido gerado"
+    assert fake_metadata.exists(), "O arquivo de metadados deveria ter sido gerado"
+
+    # Valida o conteúdo do metadata (cobre as linhas de cálculo de fraude e hash)
+    with open(fake_metadata, "r") as f:
+        meta = json.load(f)
+        assert "data_version" in meta
+        assert meta["n_rows"] == 10
+        assert "fraud_rate" in meta
+
+
+def test_file_md5_full_coverage(tmp_path):
+    """Garante execução da lógica de leitura em chunks do MD5 (linhas 55-61)."""
+    d = tmp_path / "dir"
+    d.mkdir()
+    p = d / "test_file.txt"
+    # Criando um arquivo maior que 8192 bytes para testar o loop do chunk
+    p.write_bytes(b"0" * 10000)
+
+    hash_val = file_md5(str(p))
+    assert len(hash_val) == 32
+
+
+def test_full_main_execution(tmp_path):
+    """
+    Cobre as linhas 65-86 (lógica do main) e indiretamente a 90.
+    Utilizamos patch para redirecionar caminhos de arquivos para pastas temporárias.
+    """
+    # 1. Definimos caminhos temporários para não poluir sua pasta real
+    fake_csv = tmp_path / "fraud_dataset.csv"
+    fake_metadata_path = tmp_path / "dataset_metadata.json"
+
+    # 2. Fazemos o Patch das constantes e da classe Path
+    with (
+        patch("src.scripts.generate_fraud_data.N_AMOSTRAS", 5),
+        patch("src.scripts.generate_fraud_data.OUTPUT_PATH", str(fake_csv)),
+        patch("src.scripts.generate_fraud_data.Path") as mock_path,
+    ):
+
+        # Configura o mock do Path para que 'metadata_path.parent.mkdir' funcione
+        mock_path.return_value = fake_metadata_path
+        mock_path.parent = tmp_path
+
+        # 3. Chama o main REAL (sem mockar a função main em si)
+        # Isso executará as linhas 65 até 86
+        main()
+
+    # 4. Validações para garantir que o código passou por todas as linhas
+    assert fake_csv.exists()
+    assert fake_metadata_path.exists()
+
+    with open(fake_metadata_path, "r") as f:
+        meta = json.load(f)
+        assert "data_version" in meta
+        assert meta["n_rows"] == 5
+        assert "fraud_rate" in meta
+
+
+def test_script_execution_entrypoint():
+    """
+    Este teste simula a execução do arquivo como script para cobrir a linha 90.
+    """
+    with (
+        patch("src.scripts.generate_fraud_data.__name__", "__main__"),
+        patch("src.scripts.generate_fraud_data.main") as mock_main,
+    ):
+        # Importar novamente ou disparar a lógica de execução
+        import src.scripts.generate_fraud_data
+
+        # Ao forçar o __name__, o bloco da linha 90 é lido
+        assert mock_main.called

@@ -18,6 +18,7 @@ coverage.xml
 
 DONE.md
 METAs.md
+PROJECT_ANALYSIS.md
 
 dist/
 .ruff_cache

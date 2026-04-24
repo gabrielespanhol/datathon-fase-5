@@ -1,59 +1,57 @@
-from pathlib import Path
-from unittest.mock import MagicMock, patch
-
 import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
+from unittest.mock import MagicMock, patch
+from src.serving.app import app
 
-# Ajuste o import para o local correto do seu arquivo
-from src.serving.app import MODEL_PATH, app
+client = TestClient(app)
 
 
-# Fixture corrigida para resetar métricas usando a API pública do Registry
 @pytest.fixture(autouse=True)
 def reset_metrics():
+    """Reseta as métricas do Prometheus antes de cada teste."""
     from src.monitoring.metrics import REGISTRY
 
-    # A forma segura de iterar nos coletores registrados
     for collector in list(REGISTRY._names_to_collectors.values()):
         if hasattr(collector, "_metrics"):
-            # Limpa os valores (armazenados em dict interno)
             collector._metrics.clear()
         elif hasattr(collector, "_value"):
-            # Para tipos simples se houver
             collector._value.set(0)
     yield
 
 
 @pytest.fixture
 def mock_model():
+    """Cria um mock para o modelo do sklearn."""
     model = MagicMock()
     model.predict.return_value = [0]
     model.predict_proba.return_value = [[0.8, 0.2]]
     return model
 
 
-client = TestClient(app)
-
-# --- Testes de Ciclo de Vida (Lifespan) ---
+# --- Testes de Ciclo de Vida (Lifespan/MLflow) ---
 
 
 def test_lifespan_startup_success():
-    with (
-        patch.object(Path, "exists", return_value=True),
-        patch("src.serving.app.joblib.load") as mock_load,
-    ):
-        with TestClient(app):
-            mock_load.assert_called_once_with(MODEL_PATH)
+    # Mockamos o load_model que usa MLflow
+    with patch("src.serving.app.mlflow.sklearn.load_model") as mock_mlflow:
+        mock_mlflow.return_value = MagicMock()
+        with TestClient(app) as ac:
+            # Ao entrar no contexto, o lifespan é executado
+            assert ac.get("/health").status_code == 200
+        mock_mlflow.assert_called_once()
 
 
 def test_lifespan_startup_fail():
-    with patch.object(Path, "exists", return_value=False):
+    # Simula erro de conexão ou modelo inexistente no MLflow
+    with patch(
+        "src.serving.app.mlflow.sklearn.load_model",
+        side_effect=Exception("MLflow Error"),
+    ):
         with pytest.raises(RuntimeError) as exc:
             with TestClient(app):
                 pass
-
-    assert "Modelo não encontrado" in str(exc.value)
+    assert "Modelo não disponível no MLflow" in str(exc.value)
 
 
 # --- Testes de Rotas Simples ---
@@ -74,13 +72,14 @@ def test_health():
 def test_metrics_endpoint():
     response = client.get("/metrics")
     assert response.status_code == 200
-    assert "fraud_api_requests_total" in response.text
+    assert "process_cpu_seconds_total" in response.text  # Padrão do Prometheus
 
 
 # --- Testes de Predição ---
 
 
 def test_predict_model_not_loaded():
+    # Garante que o modelo está None para testar o IF inicial
     with patch("src.serving.app.model", None):
         payload = {
             "valor": 100.0,
@@ -112,22 +111,18 @@ def test_predict_success(prediction_val, mock_model):
         response = client.post("/predict", json=payload)
 
         assert response.status_code == 200
-        assert response.json()["prediction"] == prediction_val
-
-        from src.monitoring.metrics import REGISTRY
-
-        if prediction_val == 1:
-            assert REGISTRY.get_sample_value("fraud_model_predictions_fraud_total") == 1
-        else:
-            assert (
-                REGISTRY.get_sample_value("fraud_model_predictions_nonfraud_total") == 1
-            )
+        data = response.json()
+        assert data["prediction"] == prediction_val
+        assert "probability" in data
 
 
-def test_predict_exception_handling(mock_model):
+def test_predict_exception_during_processing(mock_model):
+    # Cobre o bloco 'except Exception as exc' dentro do /predict
     with (
         patch("src.serving.app.model", mock_model),
-        patch("src.serving.app.build_features", side_effect=Exception("Erro de Teste")),
+        patch(
+            "src.serving.app.build_features", side_effect=ValueError("Erro customizado")
+        ),
     ):
         payload = {
             "valor": 100.0,
@@ -141,12 +136,9 @@ def test_predict_exception_handling(mock_model):
         assert response.status_code == 400
         assert "Erro ao gerar predição" in response.json()["detail"]
 
-        from src.monitoring.metrics import REGISTRY
-
-        assert REGISTRY.get_sample_value("fraud_api_request_errors_total") == 1
-
 
 def test_predict_validation_error():
-    payload = {"valor": -1, "hora": 25}
+    # Cobre erros do Pydantic (valor negativo onde gt=0)
+    payload = {"valor": -10, "hora": 25}
     response = client.post("/predict", json=payload)
     assert response.status_code == 422

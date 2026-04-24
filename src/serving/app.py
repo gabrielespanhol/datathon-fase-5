@@ -1,9 +1,8 @@
+import logging
 import time
 from contextlib import asynccontextmanager
-from pathlib import Path
-from typing import Any
 
-import joblib
+import mlflow
 import pandas as pd
 from fastapi import FastAPI, HTTPException, Response
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
@@ -19,17 +18,30 @@ from src.monitoring.metrics import (
     REQUEST_LATENCY,
 )
 
+logger = logging.getLogger(__name__)
+
+MODEL_NAME = "fraud_detection"
+model = None
+
+
+def load_model():
+    logger.info("Carregando modelo do MLflow (Production)...")
+
+    return mlflow.sklearn.load_model(f"models:/{MODEL_NAME}/Production")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global model
 
-    if not MODEL_PATH.exists():
-        raise RuntimeError(f"Modelo não encontrado em: {MODEL_PATH}")
+    try:
+        model = load_model()
+        logger.info("Modelo carregado com sucesso (Production)")
+    except Exception as e:
+        logger.error("Erro ao carregar modelo: %s", e)
+        raise RuntimeError("Modelo não disponível no MLflow")
 
-    model = joblib.load(MODEL_PATH)
-
-    yield  # aplicação roda aqui
+    yield
 
 
 app = FastAPI(
@@ -38,13 +50,6 @@ app = FastAPI(
     description="API de inferência para detecção de fraude.",
     lifespan=lifespan,
 )
-
-MODEL_PATH = Path(
-    "mlruns/1/models/m-b9bd8edb6d8f4e459e9de9ae28543096/artifacts/model.pkl"
-)
-
-
-model: Any | None = None
 
 
 class TransactionRequest(BaseModel):
