@@ -1,7 +1,9 @@
+from unittest.mock import MagicMock, patch
+
 import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import MagicMock, patch
+
 from src.serving.app import app
 
 client = TestClient(app)

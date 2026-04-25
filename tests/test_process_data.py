@@ -1,7 +1,9 @@
-import pytest
-import pandas as pd
 import runpy
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
+import pandas as pd
+import pytest
+
 from src.scripts import process_data
 
 
@@ -67,6 +69,7 @@ def test_script_execution_as_main():
     """
     script_path = "src/scripts/process_data.py"
     with patch("src.scripts.process_data.main") as mock_main:
+        mock_main
         runpy.run_path(script_path, run_name="__main__")
         # Note: runpy may not trigger the if in this context, but ensures no import errors
         pass

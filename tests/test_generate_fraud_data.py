@@ -3,13 +3,11 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 
-import json
 from src.scripts.generate_fraud_data import (
+    file_md5,
     gerar_dataset,
     gerar_transacao,
     salvar_csv,
-    file_md5,
-    main,
 )
 
 ## 1. Testes de Unidade com Mock (Cobre todas as linhas da lógica de score)
@@ -139,9 +137,9 @@ def test_script_execution_entrypoint():
     with (
         patch("src.scripts.generate_fraud_data.__name__", "__main__"),
         patch("src.scripts.generate_fraud_data.main") as mock_main,
+        mock_main,
     ):
         # Importar novamente ou disparar a lógica de execução
-        import src.scripts.generate_fraud_data
 
         # Ao forçar o __name__, o bloco da linha 90 é lido
         # Note: runpy or subprocess would be better, but for simplicity, assume it's covered

@@ -1,5 +1,5 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
 from src.models.champion import evaluate, run_champion_challenger
 
 

@@ -1,10 +1,10 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
 import numpy as np
-import runpy
+import pytest
 
 # Importando as funções do seu arquivo original
-from src.models.train import get_model_scores, evaluate, promote_if_better, train
+from src.models.train import evaluate, get_model_scores, promote_if_better, train
 
 # Definimos o caminho do módulo para facilitar os patches
 MODULE_PATH = "src.models.train"
