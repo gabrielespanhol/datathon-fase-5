@@ -72,7 +72,7 @@ def test_health():
 def test_metrics_endpoint():
     response = client.get("/metrics")
     assert response.status_code == 200
-    assert "process_cpu_seconds_total" in response.text  # Padrão do Prometheus
+    assert "fraud_api_requests_total" in response.text  # Métrica custom do Prometheus
 
 
 # --- Testes de Predição ---

@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-04-25T01:45:26.245963+00:00",
+  "drift_share": 0.0,
+  "n_reference": 5,
+  "n_current": 5,
+  "n_drifted_features": 0,
+  "total_features_checked": 2
+}
