@@ -68,11 +68,21 @@ def test_script_execution_as_main():
     É a forma mais limpa de cobrir a linha 25 sem redundância de reload.
     """
     script_path = "src/scripts/process_data.py"
-    with patch("src.scripts.process_data.main") as mock_main:
-        mock_main
+
+    with (
+        patch("pathlib.Path.exists", return_value=True),
+        patch(
+            "pandas.read_csv", return_value=pd.DataFrame({"valor": [100], "hora": [10]})
+        ),
+        patch(
+            "src.features.feature_engineering.build_features",
+            return_value=pd.DataFrame({"valor": [100], "hora": [10]}),
+        ),
+        patch("pandas.DataFrame.to_parquet") as mock_to_parquet,
+    ):
         runpy.run_path(script_path, run_name="__main__")
-        # Note: runpy may not trigger the if in this context, but ensures no import errors
-        pass
+
+    assert mock_to_parquet.called
 
 
 ## 4. Teste de Sanidade/Importação

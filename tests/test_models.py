@@ -62,6 +62,16 @@ def test_run_baseline_returns_metrics_dict(
         return sample_data
 
     monkeypatch.setattr("src.models.baseline.load_data", fake_load_data)
+    monkeypatch.setattr(
+        "src.models.baseline.load_dataset_metadata",
+        lambda path=None: {
+            "data_version": "dummy_hash",
+            "generated_at": "2026-01-01T00:00:00",
+            "n_rows": len(sample_data),
+            "fraud_rate": 0.5,
+            "raw_path": "data/raw/fraud_dataset.csv",
+        },
+    )
     monkeypatch.setattr("src.models.baseline.mlflow.set_experiment", lambda name: None)
     monkeypatch.setattr(
         "src.models.baseline.mlflow.log_param", lambda *args, **kwargs: None
@@ -100,6 +110,16 @@ def test_run_baseline_metrics_are_between_zero_and_one(
         return sample_data
 
     monkeypatch.setattr("src.models.baseline.load_data", fake_load_data)
+    monkeypatch.setattr(
+        "src.models.baseline.load_dataset_metadata",
+        lambda path=None: {
+            "data_version": "dummy_hash",
+            "generated_at": "2026-01-01T00:00:00",
+            "n_rows": len(sample_data),
+            "fraud_rate": 0.5,
+            "raw_path": "data/raw/fraud_dataset.csv",
+        },
+    )
     monkeypatch.setattr("src.models.baseline.mlflow.set_experiment", lambda name: None)
     monkeypatch.setattr(
         "src.models.baseline.mlflow.log_param", lambda *args, **kwargs: None
