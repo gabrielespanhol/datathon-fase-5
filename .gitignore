@@ -23,3 +23,5 @@ PROJECT_ANALYSIS.md
 dist/
 .ruff_cache
 .pytest_cache
+
+MagicMock/
