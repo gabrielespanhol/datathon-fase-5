@@ -10,10 +10,11 @@ def test_evaluate():
     X = [[1, 2], [3, 4]]
     y = [0, 1]
 
-    # Execução (ROC AUC de predição perfeita deve ser 1.0)
-    score = evaluate(mock_model, X, y)
+    # Execução (Predição perfeita deve retornar 1.0 para AUC e 1.0 para Recall)
+    auc, recall = evaluate(mock_model, X, y)
 
-    assert score == 1.0
+    assert auc == 1.0
+    assert recall == 1.0
     mock_model.predict.assert_called_once_with(X)
 
 
@@ -23,16 +24,31 @@ def test_evaluate():
 def test_run_champion_challenger_promotes_new_model(
     mock_evaluate, mock_build_model, mock_mlflow_sklearn
 ):
-    """Cenário: Challenger é melhor que o Champion atual"""
-    # Configuração dos mocks
+    """Cenário: Challenger é melhor que o Champion atual no AUC"""
     mock_challenger = MagicMock()
     mock_build_model.return_value = mock_challenger
 
-    mock_champion = MagicMock()
-    mock_mlflow_sklearn.load_model.return_value = mock_champion
+    # Challenger (0.9 AUC, 0.5 Recall) vs Champion (0.8 AUC, 0.5 Recall)
+    mock_evaluate.side_effect = [(0.9, 0.5), (0.8, 0.5)]
 
-    # Mock do evaluate: primeiro chamado (challenger) retorna 0.9, segundo (champion) retorna 0.8
-    mock_evaluate.side_effect = [0.9, 0.8]
+    result = run_champion_challenger(None, None, None, None)
+
+    assert result == "challenger_promoted"
+    mock_mlflow_sklearn.log_model.assert_called_once()
+
+
+@patch("src.models.champion.mlflow.sklearn")
+@patch("src.models.champion.build_model")
+@patch("src.models.champion.evaluate")
+def test_run_champion_challenger_promotes_on_recall_tiebreak(
+    mock_evaluate, mock_build_model, mock_mlflow_sklearn
+):
+    """Cenário: AUC igual, mas Challenger tem melhor Recall"""
+    mock_challenger = MagicMock()
+    mock_build_model.return_value = mock_challenger
+
+    # Challenger (0.8 AUC, 0.9 Recall) vs Champion (0.8 AUC, 0.7 Recall)
+    mock_evaluate.side_effect = [(0.8, 0.9), (0.8, 0.7)]
 
     result = run_champion_challenger(None, None, None, None)
 
@@ -47,14 +63,8 @@ def test_run_champion_challenger_keeps_champion(
     mock_evaluate, mock_build_model, mock_mlflow_sklearn
 ):
     """Cenário: Champion atual ainda é melhor que o Challenger"""
-    mock_challenger = MagicMock()
-    mock_build_model.return_value = mock_challenger
-
-    mock_champion = MagicMock()
-    mock_mlflow_sklearn.load_model.return_value = mock_champion
-
-    # Challenger 0.7 vs Champion 0.8
-    mock_evaluate.side_effect = [0.7, 0.8]
+    # Challenger (0.7 AUC, 0.9 Recall) vs Champion (0.8 AUC, 0.9 Recall)
+    mock_evaluate.side_effect = [(0.7, 0.9), (0.8, 0.9)]
 
     result = run_champion_challenger(None, None, None, None)
 
@@ -68,18 +78,13 @@ def test_run_champion_challenger_keeps_champion(
 def test_run_champion_challenger_no_existing_champion(
     mock_evaluate, mock_build_model, mock_mlflow_sklearn
 ):
-    """Cenário: Erro ao carregar champion (ex: primeira execução do pipeline)"""
-    mock_challenger = MagicMock()
-    mock_build_model.return_value = mock_challenger
-
-    # Simula erro ao carregar o modelo do MLflow (cobre o bloco except)
+    """Cenário: Erro ao carregar champion (bloco except)"""
     mock_mlflow_sklearn.load_model.side_effect = Exception("Model not found")
 
-    # Score do challenger
-    mock_evaluate.return_value = 0.9
+    # Score do challenger (qualquer valor > 0 resultará em promoção)
+    mock_evaluate.return_value = (0.9, 0.8)
 
     result = run_champion_challenger(None, None, None, None)
 
     assert result == "challenger_promoted"
-    # Garante que o score do champion foi tratado como 0
     mock_mlflow_sklearn.log_model.assert_called_once()
