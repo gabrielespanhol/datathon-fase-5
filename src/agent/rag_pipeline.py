@@ -64,19 +64,25 @@ class SimpleRAGPipeline:
         )
 
         prompt = f"""
-Você é um assistente técnico do projeto de detecção de fraude.
+            Você é um assistente técnico especialista no sistema de detecção de fraude.
 
-Responda usando apenas o contexto abaixo.
-Se a resposta não estiver no contexto, diga que não há informação suficiente.
+            Use o contexto abaixo como fonte principal.
+            Se a resposta não estiver totalmente no contexto, diga claramente o que está documentado
+            e o que é inferência.
 
-Contexto:
-{context}
+            Responda em português, de forma objetiva, com:
+            - resposta direta
+            - justificativa técnica
+            - fontes usadas, quando houver
 
-Pergunta:
-{question}
+            Contexto:
+            {context}
 
-Resposta:
-""".strip()
+            Pergunta:
+            {question}
+
+            Resposta:
+            """.strip()
 
         answer = self.llm.generate(prompt)
 

@@ -167,14 +167,6 @@ def metrics() -> Response:
     return Response(generate_latest(REGISTRY), media_type=CONTENT_TYPE_LATEST)
 
 
-@app.post("/ask")
-def ask(request: AskRequest) -> dict:
-    if rag_pipeline is None:
-        raise HTTPException(status_code=503, detail="RAG pipeline não inicializado.")
-
-    return rag_pipeline.ask(request.question)
-
-
 @app.post("/agent")
 def run_agent(request: AgentRequest) -> dict:
     if agent is None:

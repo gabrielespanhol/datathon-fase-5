@@ -8,15 +8,22 @@ from src.agent.tools import (
 
 
 def extract_transaction(question: str) -> dict:
-    def get_number(name: str, default: float = 0) -> float:
-        match = re.search(rf"{name}\s*[:=]?\s*(\d+(\.\d+)?)", question, re.I)
-        return float(match.group(1)) if (match and match.group(1)) else default
+    def get_number(pattern: str, default: float = 0) -> float:
+        match = re.search(rf"(?:{pattern})\s*[:=]?\s*(\d+(?:\.\d+)?)", question, re.I)
+        return float(match.group(1)) if match else default
 
     return {
         "valor": get_number("valor", 1),
         "hora": int(get_number("hora", 12)),
-        "dispositivo_novo": "dispositivo novo" in question.lower()
-        or "dispositivo_novo true" in question.lower(),
+        "dispositivo_novo": any(
+            term in question.lower()
+            for term in [
+                "dispositivo novo",
+                "dispositivo_novo true",
+                "dispositivo_novo: true",
+                "dispositivo_novo=true",
+            ]
+        ),
         "tentativas_24h": int(get_number("tentativas_24h|tentativas", 0)),
         "distancia_km": get_number("distancia_km|distância|distancia", 0),
     }
@@ -27,44 +34,131 @@ class SimpleFraudAgent:
         self.model = model
         self.rag_pipeline = rag_pipeline
 
-    def run(self, question: str) -> dict:
-        lower_question = question.lower()
+    def classify_intent(self, question: str) -> str:
+        q = question.lower()
 
-        if any(
-            word in lower_question
-            for word in ["modelo", "treino", "métrica", "mlflow", "model card"]
-        ):
-            rag_result = rag_docs_tool(self.rag_pipeline, question)
-            return {
-                "tool_used": "rag_docs_tool",
-                "answer": rag_result["answer"],
-                "sources": rag_result.get("sources", []),
-            }
+        has_transaction_data = any(
+            field in q
+            for field in [
+                "valor",
+                "hora",
+                "tentativas",
+                "distancia",
+                "distância",
+                "dispositivo",
+            ]
+        )
 
-        if any(
-            word in lower_question
-            for word in ["fraude", "transação", "risco", "prever", "predição"]
-        ):
-            transaction = extract_transaction(question)
+        asks_prediction = any(
+            word in q
+            for word in [
+                "fraude",
+                "risco",
+                "prever",
+                "predição",
+                "predicao",
+                "classificar",
+                "transação",
+                "transacao",
+            ]
+        )
 
-            prediction = predict_fraud_tool(self.model, transaction)
-            explanation = explain_risk_tool(transaction)
+        asks_docs = any(
+            word in q
+            for word in [
+                "modelo",
+                "treino",
+                "treinamento",
+                "métrica",
+                "metrica",
+                "mlflow",
+                "model card",
+                "documentação",
+                "documentacao",
+                "features",
+                "variáveis",
+                "variaveis",
+                "pipeline",
+            ]
+        )
 
-            return {
-                "tool_used": "predict_fraud_tool + explain_risk_tool",
-                "transaction": transaction,
-                "prediction": prediction,
-                "explanation": explanation,
-                "answer": (
-                    f"A transação foi classificada como {prediction['label']} "
-                    f"com probabilidade {prediction['probability']:.2%}. "
-                    f"{explanation}"
-                ),
-            }
+        if asks_prediction and has_transaction_data and asks_docs:
+            return "hybrid"
 
-        rag_result = rag_docs_tool(self.rag_pipeline, question)
+        if asks_prediction and has_transaction_data:
+            return "prediction"
+
+        if asks_docs:
+            return "docs"
+
+        return "docs"
+
+    def _run_prediction(self, question: str) -> dict:
+        transaction = extract_transaction(question)
+
+        prediction = predict_fraud_tool(self.model, transaction)
+        explanation = explain_risk_tool(transaction)
+
         return {
-            "tool_used": "rag_docs_tool",
+            "intent": "prediction",
+            "tools_used": [
+                "predict_fraud_tool",
+                "explain_risk_tool",
+            ],
+            "transaction": transaction,
+            "prediction": prediction,
+            "explanation": explanation,
+            "answer": (
+                f"A transação foi classificada como {prediction['label']} "
+                f"com probabilidade de {prediction['probability']:.2%}. "
+                f"{explanation}"
+            ),
+        }
+
+    def _run_docs(self, question: str) -> dict:
+        rag_result = rag_docs_tool(self.rag_pipeline, question)
+
+        return {
+            "intent": "docs",
+            "tools_used": ["rag_docs_tool"],
             "answer": rag_result["answer"],
             "sources": rag_result.get("sources", []),
         }
+
+    def _run_hybrid(self, question: str) -> dict:
+        transaction = extract_transaction(question)
+
+        prediction = predict_fraud_tool(self.model, transaction)
+        explanation = explain_risk_tool(transaction)
+        rag_result = rag_docs_tool(self.rag_pipeline, question)
+
+        return {
+            "intent": "hybrid",
+            "tools_used": [
+                "predict_fraud_tool",
+                "explain_risk_tool",
+                "rag_docs_tool",
+            ],
+            "transaction": transaction,
+            "prediction": prediction,
+            "explanation": explanation,
+            "docs_answer": rag_result["answer"],
+            "sources": rag_result.get("sources", []),
+            "answer": (
+                f"A transação foi classificada como {prediction['label']} "
+                f"com probabilidade de {prediction['probability']:.2%}. "
+                f"{explanation}\n\n"
+                f"Com base na documentação do projeto: {rag_result['answer']}"
+            ),
+        }
+
+    def run(self, question: str) -> dict:
+        intent = self.classify_intent(question)
+
+        if intent == "prediction":
+            return self._run_prediction(question)
+
+        if intent == "hybrid":
+            return self._run_hybrid(question)
+
+        return self._run_docs(question)
