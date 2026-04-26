@@ -80,8 +80,6 @@ Resposta:
 
         answer = self.llm.generate(prompt)
 
-        answer = self.llm.generate(prompt)
-
         return {
             "question": question,
             "answer": answer,

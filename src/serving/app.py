@@ -18,13 +18,21 @@ from src.monitoring.metrics import (
     REQUEST_ERRORS,
     REQUEST_LATENCY,
 )
+from src.agent.simple_agent import SimpleFraudAgent
+
 
 logger = logging.getLogger(__name__)
 
 model = None
+rag_pipeline = None
+agent = None
 
 
 class AskRequest(BaseModel):
+    question: str
+
+
+class AgentRequest(BaseModel):
     question: str
 
 
@@ -38,6 +46,7 @@ def load_model():
 async def lifespan(app: FastAPI):
     global model
     global rag_pipeline
+    global agent
 
     rag_pipeline = SimpleRAGPipeline(
         docs_paths=[
@@ -45,7 +54,6 @@ async def lifespan(app: FastAPI):
         ],
     )
 
-    rag_pipeline.build_index()
     try:
         model = load_model()
         logger.info("Modelo carregado com sucesso (Production)")
@@ -53,6 +61,22 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error("Erro ao carregar modelo: %s", e)
         raise RuntimeError("Modelo não disponível no MLflow")
+
+    try:
+        rag_pipeline.build_index()
+        logger.info("Índice RAG construído com sucesso")
+
+    except Exception as e:
+        logger.error("Erro ao construir índice RAG: %s", e)
+        raise RuntimeError("Falha na indexação do pipeline RAG")
+
+    try:
+        agent = SimpleFraudAgent(model=model, rag_pipeline=rag_pipeline)
+        logger.info("Agente de fraude inicializado com sucesso")
+
+    except Exception as e:
+        logger.error("Erro ao inicializar o agente: %s", e)
+        raise RuntimeError("Não foi possível instanciar o SimpleFraudAgent")
 
     yield
 
@@ -149,3 +173,11 @@ def ask(request: AskRequest) -> dict:
         raise HTTPException(status_code=503, detail="RAG pipeline não inicializado.")
 
     return rag_pipeline.ask(request.question)
+
+
+@app.post("/agent")
+def run_agent(request: AgentRequest) -> dict:
+    if agent is None:
+        raise HTTPException(status_code=503, detail="Agente não inicializado.")
+
+    return agent.run(request.question)
