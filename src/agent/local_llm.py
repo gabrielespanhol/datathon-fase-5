@@ -5,7 +5,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, set_seed
 class LocalLLM:
     def __init__(
         self,
-        model_name: str = "Qwen/Qwen2.5-0.5B-Instruct",
+        model_name: str = "Qwen/Qwen2.5-0.5B-Instruct-AWQ",
         seed: int = 20260420,
         max_new_tokens: int = 256,
     ) -> None:
@@ -15,13 +15,12 @@ class LocalLLM:
         self.max_new_tokens = max_new_tokens
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        dtype = torch.float16 if self.device == "cuda" else torch.float32
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
 
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
-            torch_dtype=dtype,
+            device_map="auto",
         ).to(self.device)
 
         self.model.eval()

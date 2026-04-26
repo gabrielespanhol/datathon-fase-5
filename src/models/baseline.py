@@ -105,6 +105,8 @@ def run_baseline(data_path: Path = DATA_PATH) -> dict[str, float]:
 
     logger.info("Iniciando treinamento baseline...")
 
+    mlflow.set_tracking_uri("sqlite:///mlflow.db")
+
     mlflow.set_experiment(EXPERIMENT_NAME)
 
     df = load_data(data_path)

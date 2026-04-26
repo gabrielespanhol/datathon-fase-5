@@ -2,8 +2,9 @@ from pathlib import Path
 from typing import NamedTuple
 
 import numpy as np
-from src.agent.local_llm import LocalLLM
 from sentence_transformers import SentenceTransformer
+
+from src.agent.local_llm import LocalLLM
 
 
 class RetrievedChunk(NamedTuple):

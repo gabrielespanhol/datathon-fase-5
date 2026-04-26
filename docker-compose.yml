@@ -6,10 +6,21 @@ services:
     container_name: fraud_api
     ports:
       - "8000:8000"
-    command: uvicorn src.serving.app:app --host 0.0.0.0 --port 8000
     volumes:
-      - .:/app
+      - ./mlruns:/app/mlruns
+      - ./data:/app/data
     working_dir: /app
+    environment:
+      - PYTHONUNBUFFERED=1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    depends_on:
+      - prometheus
 
   prometheus:
     image: prom/prometheus:latest
@@ -19,8 +30,6 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
-    depends_on:
-      - api
 
   grafana:
     image: grafana/grafana:latest

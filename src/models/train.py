@@ -3,8 +3,14 @@ import logging
 import mlflow
 from mlflow.tracking import MlflowClient
 from sklearn.metrics import roc_auc_score
-
 from src.models.baseline import run_baseline
+from pathlib import Path
+import shutil
+import mlflow.sklearn
+
+
+CHAMPION_PATH = Path("src/models/fraud_detection")
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -46,23 +52,71 @@ def evaluate(model, X, y):
         return roc_auc_score(y, y_pred)
 
 
+def save_champion(model):
+    tmp_path = Path("src/models/fraud_detection_tmp")
+
+    if tmp_path.exists():
+        shutil.rmtree(tmp_path)
+
+    mlflow.sklearn.save_model(model, path=tmp_path)
+
+    if CHAMPION_PATH.exists():
+        shutil.rmtree(CHAMPION_PATH)
+
+    tmp_path.rename(CHAMPION_PATH)
+
+
+# def promote_if_better(
+#     challenger_model,
+#     X_test,
+#     y_test,
+#     model_name: str = "fraud_detection",
+#     min_improvement: float = 0.005,  # 0.5%
+# ):
+#     client = MlflowClient()
+
+#     try:
+#         champion = mlflow.sklearn.load_model(f"models:/{model_name}/Production")
+
+#         champion_score = evaluate(champion, X_test, y_test)
+
+#     except Exception:
+#         logger.warning("Nenhum champion encontrado — promovendo challenger")
+#         champion_score = 0
+
+#     challenger_score = evaluate(challenger_model, X_test, y_test)
+
+#     logger.info("Champion score: %.4f", champion_score)
+#     logger.info("Challenger score: %.4f", challenger_score)
+
+#     if challenger_score > champion_score + min_improvement:
+#         versions = client.get_latest_versions(model_name)
+#         latest_version = versions[0].version
+
+#         client.transition_model_version_stage(
+#             name=model_name, version=latest_version, stage="Production"
+#         )
+
+#         logger.info("🚀 Challenger promovido para Production")
+#         return "promoted"
+
+#     logger.info("Champion mantido")
+#     return "kept"
+
+
 def promote_if_better(
     challenger_model,
     X_test,
     y_test,
-    model_name: str = "fraud_detection",
-    min_improvement: float = 0.005,  # 0.5%
+    min_improvement: float = 0.005,
 ):
-    client = MlflowClient()
-
     try:
-        champion = mlflow.sklearn.load_model(f"models:/{model_name}/Production")
-
+        champion = mlflow.sklearn.load_model(CHAMPION_PATH)
         champion_score = evaluate(champion, X_test, y_test)
-
     except Exception:
-        logger.warning("Nenhum champion encontrado — promovendo challenger")
-        champion_score = 0
+        logger.warning("Nenhum champion local encontrado — salvando primeiro modelo")
+        save_champion(challenger_model)
+        return "promoted"
 
     challenger_score = evaluate(challenger_model, X_test, y_test)
 
@@ -70,14 +124,8 @@ def promote_if_better(
     logger.info("Challenger score: %.4f", challenger_score)
 
     if challenger_score > champion_score + min_improvement:
-        versions = client.get_latest_versions(model_name)
-        latest_version = versions[0].version
-
-        client.transition_model_version_stage(
-            name=model_name, version=latest_version, stage="Production"
-        )
-
-        logger.info("🚀 Challenger promovido para Production")
+        save_champion(challenger_model)
+        logger.info("Challenger salvo como novo champion")
         return "promoted"
 
     logger.info("Champion mantido")

@@ -1,14 +1,14 @@
 import logging
 import time
 from contextlib import asynccontextmanager
-
+import os
 import mlflow
 import pandas as pd
 from fastapi import FastAPI, HTTPException, Response
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from pydantic import BaseModel, Field
-from src.agent.rag_pipeline import SimpleRAGPipeline
 
+from src.agent.rag_pipeline import SimpleRAGPipeline
 from src.features.feature_engineering import build_features
 from src.monitoring.metrics import (
     FRAUD_PREDICTIONS,
@@ -21,7 +21,6 @@ from src.monitoring.metrics import (
 
 logger = logging.getLogger(__name__)
 
-MODEL_NAME = "fraud_detection"
 model = None
 
 
@@ -30,34 +29,32 @@ class AskRequest(BaseModel):
 
 
 def load_model():
-    logger.info("Carregando modelo do MLflow (Production)...")
-
-    return mlflow.sklearn.load_model(f"models:/{MODEL_NAME}/Production")
+    model_path = "./src/models/fraud_detection"
+    logger.info("Carregando modelo de: %s", model_path)
+    return mlflow.sklearn.load_model(model_path)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global model
-
-    try:
-        model = load_model()
-        logger.info("Modelo carregado com sucesso (Production)")
-    except Exception as e:
-        logger.error("Erro ao carregar modelo: %s", e)
-        raise RuntimeError("Modelo não disponível no MLflow")
-
-    yield
-
     global rag_pipeline
 
     rag_pipeline = SimpleRAGPipeline(
         docs_paths=[
             "docs/MODEL_CARD.md",
-            "docs/PROJECT_ANALYSIS.md",
         ],
     )
 
     rag_pipeline.build_index()
+    try:
+        model = load_model()
+        logger.info("Modelo carregado com sucesso (Production)")
+
+    except Exception as e:
+        logger.error("Erro ao carregar modelo: %s", e)
+        raise RuntimeError("Modelo não disponível no MLflow")
+
+    yield
 
 
 app = FastAPI(
