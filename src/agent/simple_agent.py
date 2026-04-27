@@ -7,16 +7,34 @@ from src.agent.tools import (
 )
 
 
+def normalize_question(question: str) -> str:
+    q = question.lower().strip()
+
+    # separa letras e números: fraude13h -> fraude 13h
+    q = re.sub(r"([a-zA-ZçÇãõáéíóúâêôàü]+)(\d)", r"\1 \2", q)
+    q = re.sub(r"(\d)([a-zA-ZçÇãõáéíóúâêôàü]+)", r"\1 \2", q)
+
+    # junta de volta padrão de hora: 13 h -> 13h
+    q = re.sub(r"\b(\d{1,2})\s*h\b", r"\1h", q)
+
+    return q
+
+
 def extract_transaction(question: str) -> dict:
+    q = normalize_question(question)
+
     def get_number(pattern: str, default: float = 0) -> float:
-        match = re.search(rf"(?:{pattern})\s*[:=]?\s*(\d+(?:\.\d+)?)", question, re.I)
+        match = re.search(rf"(?:{pattern})\s*[:=]?\s*(\d+(?:\.\d+)?)", q, re.I)
         return float(match.group(1)) if match else default
+
+    hora_match = re.search(r"\b(\d{1,2})h\b", q)
+    hora = int(hora_match.group(1)) if hora_match else int(get_number("hora", 12))
 
     return {
         "valor": get_number("valor", 1),
-        "hora": int(get_number("hora", 12)),
+        "hora": hora,
         "dispositivo_novo": any(
-            term in question.lower()
+            term in q
             for term in [
                 "dispositivo novo",
                 "dispositivo_novo true",
@@ -35,9 +53,11 @@ class SimpleFraudAgent:
         self.rag_pipeline = rag_pipeline
 
     def classify_intent(self, question: str) -> str:
-        q = question.lower()
+        q = normalize_question(question)
 
-        has_transaction_data = any(
+        has_compact_hour = re.search(r"\b\d{1,2}h\b", q) is not None
+
+        has_transaction_data = has_compact_hour or any(
             field in q
             for field in [
                 "valor",

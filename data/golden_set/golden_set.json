@@ -1,0 +1,142 @@
+[
+    {
+        "query": "Transação de 4500 reais às 2h com dispositivo novo e 4 tentativas nas últimas 24h é fraude?",
+        "expected_answer": "Alta probabilidade de fraude devido ao valor elevado, horário incomum, dispositivo novo e múltiplas tentativas recentes.",
+        "type": "prediction",
+        "difficulty": "easy",
+        "risk_level": "high",
+        "features": {
+            "valor": 4500,
+            "hora": 2,
+            "dispositivo_novo": true,
+            "tentativas_24h": 4,
+            "distancia_km": 1200
+        }
+    },
+    {
+        "query": "Transação de 50 reais às 14h com dispositivo conhecido e nenhuma tentativa recente é suspeita?",
+        "expected_answer": "Baixa probabilidade de fraude pois o valor é baixo, o horário é comum e não há sinais de comportamento suspeito.",
+        "type": "prediction",
+        "difficulty": "easy",
+        "risk_level": "low",
+        "features": {
+            "valor": 50,
+            "hora": 14,
+            "dispositivo_novo": false,
+            "tentativas_24h": 0,
+            "distancia_km": 5
+        }
+    },
+    {
+        "query": "Pagamento de 2000 reais às 23h com dispositivo conhecido mas distância de 1500km é arriscado?",
+        "expected_answer": "Moderado risco de fraude devido à distância elevada e horário noturno, apesar do dispositivo ser conhecido.",
+        "type": "prediction",
+        "difficulty": "medium",
+        "risk_level": "medium"
+    },
+    {
+        "query": "Compra de 300 reais às 10h com dispositivo novo e 3 tentativas recentes pode ser fraude?",
+        "expected_answer": "Risco moderado, pois o dispositivo é novo e há múltiplas tentativas, mesmo com valor médio.",
+        "type": "prediction",
+        "difficulty": "medium",
+        "risk_level": "medium"
+    },
+    {
+        "query": "Uma transação de 1000 reais às 1h com dispositivo novo e 5 tentativas é fraude?",
+        "expected_answer": "Alta probabilidade de fraude devido à combinação de múltiplos sinais de risco: horário incomum, dispositivo novo e muitas tentativas.",
+        "type": "prediction",
+        "difficulty": "medium",
+        "risk_level": "high"
+    },
+    {
+        "query": "Transação de 200 reais às 16h com dispositivo conhecido e sem tentativas recentes é fraude?",
+        "expected_answer": "Baixo risco de fraude pois apresenta comportamento típico e sem sinais suspeitos.",
+        "type": "prediction",
+        "difficulty": "easy",
+        "risk_level": "low"
+    },
+    {
+        "query": "Por que transações de madrugada são mais suspeitas?",
+        "expected_answer": "Transações realizadas em horários incomuns, como madrugada, são mais associadas a comportamentos fraudulentos pois fogem do padrão típico de uso.",
+        "type": "explanation",
+        "difficulty": "easy"
+    },
+    {
+        "query": "Por que o uso de dispositivo novo aumenta o risco?",
+        "expected_answer": "Dispositivos novos indicam que a conta pode estar sendo acessada por terceiros, aumentando a probabilidade de fraude.",
+        "type": "explanation",
+        "difficulty": "easy"
+    },
+    {
+        "query": "Como a distância influencia na detecção de fraude?",
+        "expected_answer": "Distâncias grandes em relação ao comportamento habitual podem indicar acesso indevido ou uso da conta em outra localização.",
+        "type": "explanation",
+        "difficulty": "medium"
+    },
+    {
+        "query": "Por que múltiplas tentativas em 24h são um sinal de risco?",
+        "expected_answer": "Muitas tentativas podem indicar tentativa de invasão ou exploração da conta, aumentando o risco de fraude.",
+        "type": "explanation",
+        "difficulty": "medium"
+    },
+    {
+        "query": "Quais fatores o sistema usa para detectar fraude?",
+        "expected_answer": "O sistema utiliza valor da transação, horário, uso de dispositivo novo, número de tentativas recentes e distância geográfica.",
+        "type": "knowledge",
+        "difficulty": "easy"
+    },
+    {
+        "query": "Qual é a taxa de fraude do dataset?",
+        "expected_answer": "A taxa de fraude no dataset é aproximadamente 18.88%.",
+        "type": "knowledge",
+        "difficulty": "medium"
+    },
+    {
+        "query": "Qual modelo está sendo utilizado no sistema?",
+        "expected_answer": "O sistema utiliza regressão logística com normalização de features para classificar transações.",
+        "type": "knowledge",
+        "difficulty": "easy"
+    },
+    {
+        "query": "Quais são os principais riscos do modelo?",
+        "expected_answer": "Os principais riscos são falsos positivos e falsos negativos, além de limitações por uso de dados sintéticos.",
+        "type": "knowledge",
+        "difficulty": "medium"
+    },
+    {
+        "query": "Uma transação de 3000 reais às 3h com dispositivo novo é fraude? Explique.",
+        "expected_answer": "Alta probabilidade de fraude devido ao valor elevado, horário incomum e uso de dispositivo novo, fatores conhecidos de risco.",
+        "type": "hybrid",
+        "difficulty": "easy"
+    },
+    {
+        "query": "Essa transação é segura? Valor 100 reais às 15h, mas com 5 tentativas recentes.",
+        "expected_answer": "Risco moderado, pois embora o valor e horário sejam normais, o alto número de tentativas recentes indica comportamento suspeito.",
+        "type": "hybrid",
+        "difficulty": "medium"
+    },
+    {
+        "query": "Explique por que uma transação com valor alto, distância alta e madrugada foi classificada como fraude.",
+        "expected_answer": "A combinação de valor alto, distância elevada e horário incomum aumenta significativamente o risco de fraude.",
+        "type": "hybrid",
+        "difficulty": "hard"
+    },
+    {
+        "query": "Uma transação de 10 reais às 2h deve ser considerada fraude?",
+        "expected_answer": "Provavelmente não, pois o valor é muito baixo, apesar do horário incomum.",
+        "type": "edge",
+        "difficulty": "hard"
+    },
+    {
+        "query": "Uma transação de 5000 reais às 14h com dispositivo conhecido é fraude?",
+        "expected_answer": "Risco moderado, pois o valor é alto, mas outros fatores não indicam comportamento suspeito.",
+        "type": "edge",
+        "difficulty": "hard"
+    },
+    {
+        "query": "Transação com todos sinais normais pode ser fraude?",
+        "expected_answer": "Sim, embora raro, fraudes podem ocorrer sem sinais evidentes, exigindo análise adicional.",
+        "type": "edge",
+        "difficulty": "hard"
+    }
+]

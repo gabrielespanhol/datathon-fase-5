@@ -59,32 +59,27 @@ class SimpleRAGPipeline:
 
     def ask(self, question: str) -> dict:
         retrieved = self.retrieve(question)
-        context = "\n\n".join(
-            f"[Fonte: {chunk.source}]\n{chunk.text}" for chunk in retrieved
-        )
+        context = "\n\n".join(chunk.text for chunk in retrieved)
 
         prompt = f"""
-            Você é um assistente técnico especialista no sistema de detecção de fraude.
+                Você é um assistente técnico especialista no sistema de detecção de fraude.
 
-            Use o contexto abaixo como fonte principal.
-            Se a resposta não estiver totalmente no contexto, diga claramente o que está documentado
-            e o que é inferência.
+                Use apenas o contexto abaixo.
+                Responda em português, de forma curta, direta e sem repetir frases.
+                Não escreva caminhos de arquivos, "Fonte:", "fontes usadas" ou nomes de documentos na resposta.
+                Se a informação não estiver no contexto, diga: "Não encontrei essa informação na documentação."
 
-            Responda em português, de forma objetiva, com:
-            - resposta direta
-            - justificativa técnica
-            - fontes usadas, quando houver
+                Contexto:
+                {context}
 
-            Contexto:
-            {context}
+                Pergunta:
+                {question}
 
-            Pergunta:
-            {question}
-
-            Resposta:
-            """.strip()
+                Resposta:
+                """.strip()
 
         answer = self.llm.generate(prompt)
+        answer = self._clean_answer(answer)
 
         return {
             "question": question,
@@ -98,6 +93,32 @@ class SimpleRAGPipeline:
                 for chunk in retrieved
             ],
         }
+
+    def _clean_answer(self, answer: str) -> str:
+        stop_markers = ["\nPergunta:", "\nResposta:", "Pergunta:", "Resposta:"]
+        for marker in stop_markers:
+            if marker in answer:
+                answer = answer.split(marker)[0]
+
+        lines = []
+        seen = set()
+
+        for line in answer.splitlines():
+            clean = line.strip()
+
+            if not clean:
+                continue
+
+            if clean.lower().startswith(("fonte:", "[fonte:", "fontes usadas")):
+                continue
+
+            if clean in seen:
+                continue
+
+            seen.add(clean)
+            lines.append(clean)
+
+        return "\n".join(lines).strip()
 
     def retrieve(self, question: str) -> list[RetrievedChunk]:
         if self.embeddings is None:
