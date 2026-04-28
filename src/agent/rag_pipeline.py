@@ -6,6 +6,29 @@ from sentence_transformers import SentenceTransformer
 
 from src.agent.local_llm import LocalLLM
 
+RESPONSE_POLICY = """
+Política de resposta:
+
+1. Se a pergunta for conceitual sobre fraude:
+   Explique diretamente o conceito, sem classificar risco de uma transação inexistente.
+
+2. Se a pergunta for sobre o sistema, modelo ou dataset:
+   Responda apenas com base no contexto recuperado.
+
+3. Se a pergunta envolver uma transação específica:
+   Se houver informações suficientes, classifique usando:
+   - Alta probabilidade de fraude
+   - Risco moderado
+   - Baixo risco de fraude
+
+   Depois explique os fatores relevantes.
+
+4. Se faltar informação:
+   Responda com cautela e diga quais fatores adicionais seriam necessários.
+
+5. Nunca responda de forma vaga.
+"""
+
 
 class RetrievedChunk(NamedTuple):
     source: str
@@ -62,12 +85,14 @@ class SimpleRAGPipeline:
         context = "\n\n".join(chunk.text for chunk in retrieved)
 
         prompt = f"""
-                Você é um assistente técnico especialista no sistema de detecção de fraude.
+                Você é um assistente técnico especialista em detecção de fraude financeira.
 
                 Use apenas o contexto abaixo.
                 Responda em português, de forma curta, direta e sem repetir frases.
                 Não escreva caminhos de arquivos, "Fonte:", "fontes usadas" ou nomes de documentos na resposta.
                 Se a informação não estiver no contexto, diga: "Não encontrei essa informação na documentação."
+
+                {RESPONSE_POLICY}
 
                 Contexto:
                 {context}

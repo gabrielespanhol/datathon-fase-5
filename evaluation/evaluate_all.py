@@ -9,13 +9,11 @@ import mlflow.sklearn
 from datasets import Dataset
 from ragas import evaluate
 from ragas.embeddings import BaseRagasEmbeddings
-from ragas.metrics import ContextPrecision, ContextRecall
 from sentence_transformers import SentenceTransformer
-
 from src.agent.local_llm import LocalLLM
 from src.agent.rag_pipeline import SimpleRAGPipeline
 from src.agent.simple_agent import SimpleFraudAgent
-
+import numpy as np
 
 GOLDEN_SET_PATH = Path("data/golden_set/golden_set.json")
 OUTPUT_PATH = Path("evaluation/evaluation_results.json")
@@ -82,6 +80,7 @@ def create_agent_for_evaluation() -> SimpleFraudAgent:
     model = mlflow.sklearn.load_model(MODEL_PATH)
 
     docs_paths = [
+        "docs/FRAUD_KNOWLEDGE_BASE.md",
         "docs/MODEL_CARD.md",
         "docs/DATASET.md",
     ]
@@ -124,39 +123,78 @@ def run_agent_on_golden_set(
     return results
 
 
-def run_ragas(results):
-    import os
+import numpy as np
 
-    os.environ["OPENAI_API_KEY"] = "dummy"
 
-    dataset = Dataset.from_list(
-        [
-            {
-                "question": item["query"],
-                "answer": item["answer"],
-                "contexts": item["contexts"],
-                "ground_truth": item["expected_answer"],
-            }
-            for item in results
-        ]
-    )
+def cosine_similarity(a: list[float], b: list[float]) -> float:
+    a_np = np.array(a)
+    b_np = np.array(b)
 
-    embeddings = LocalEmbeddingsForRagas()
+    denom = np.linalg.norm(a_np) * np.linalg.norm(b_np)
+    if denom == 0:
+        return 0.0
 
-    scores = evaluate(
-        dataset,
-        metrics=[
-            ContextPrecision(),
-            ContextRecall(),
-        ],
-        embeddings=embeddings,
-        llm=None,
+    return float(np.dot(a_np, b_np) / denom)
+
+
+def run_ragas(results: list[dict[str, Any]]) -> dict[str, float]:
+    """
+    Avaliação local robusta, sem RAGAS/OpenAI.
+
+    Métricas:
+    - context_availability: % de exemplos com contexto retornado
+    - context_semantic_similarity: similaridade semântica entre esperado+query e contexto
+    - answer_semantic_similarity: similaridade semântica entre resposta esperada e resposta do agente
+    - retrieval_score: média das métricas de contexto
+    """
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+
+    context_availability_scores = []
+    context_similarity_scores = []
+    answer_similarity_scores = []
+
+    for item in results:
+        query = item["query"]
+        expected = item["expected_answer"]
+        answer = item["answer"]
+        contexts = item.get("contexts") or []
+
+        context_text = " ".join(contexts).strip()
+
+        has_context = bool(context_text)
+        context_availability_scores.append(1.0 if has_context else 0.0)
+
+        reference_text = f"{query} {expected}"
+
+        if has_context:
+            ref_emb = model.encode(reference_text).tolist()
+            ctx_emb = model.encode(context_text).tolist()
+            context_similarity_scores.append(cosine_similarity(ref_emb, ctx_emb))
+        else:
+            context_similarity_scores.append(0.0)
+
+        expected_emb = model.encode(expected).tolist()
+        answer_emb = model.encode(answer).tolist()
+        answer_similarity_scores.append(cosine_similarity(expected_emb, answer_emb))
+
+    context_availability = float(np.mean(context_availability_scores))
+    context_semantic_similarity = float(np.mean(context_similarity_scores))
+    answer_semantic_similarity = float(np.mean(answer_similarity_scores))
+
+    retrieval_score = float(
+        np.mean(
+            [
+                context_availability,
+                context_semantic_similarity,
+            ]
+        )
     )
 
     return {
-        "context_precision": sum(scores["context_precision"])
-        / len(scores["context_precision"]),
-        "context_recall": sum(scores["context_recall"]) / len(scores["context_recall"]),
+        "context_availability": round(context_availability, 4),
+        "context_semantic_similarity": round(context_semantic_similarity, 4),
+        "answer_semantic_similarity": round(answer_semantic_similarity, 4),
+        "retrieval_score": round(retrieval_score, 4),
     }
 
 
@@ -297,7 +335,7 @@ def main() -> None:
 
     final_report = {
         "total_examples": len(golden_set),
-        "ragas": ragas_scores,
+        "local_rag_eval": ragas_scores,
         "judge_summary": judge_summary,
         "results": judged_results,
     }

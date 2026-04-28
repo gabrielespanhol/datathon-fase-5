@@ -1,23 +1,25 @@
 {
   "total_examples": 20,
-  "ragas": {
-    "context_precision": NaN,
-    "context_recall": NaN
+  "local_rag_eval": {
+    "context_availability": 1.0,
+    "context_semantic_similarity": 0.588,
+    "answer_semantic_similarity": 0.5557,
+    "retrieval_score": 0.794
   },
   "judge_summary": {
-    "correctness": 5.25,
-    "clarity": 6.15,
-    "explanation": 6.35,
-    "business_alignment": 5.1,
-    "overall_judge_score": 5.71
+    "correctness": 5.75,
+    "clarity": 7.4,
+    "explanation": 7.65,
+    "business_alignment": 6.15,
+    "overall_judge_score": 6.74
   },
   "results": [
     {
       "query": "Transação de 4500 reais às 2h com dispositivo novo e 4 tentativas nas últimas 24h é fraude?",
       "expected_answer": "Alta probabilidade de fraude devido ao valor elevado, horário incomum, dispositivo novo e múltiplas tentativas recentes.",
-      "answer": "A transação foi classificada como não fraude com probabilidade de 0.00%. Fatores de risco identificados: transação em horário incomum, uso de dispositivo novo.",
+      "answer": "Risco moderado. Motivo: Fatores de risco identificados: horário incomum, uso de dispositivo novo.",
       "contexts": [
-        "A transação foi classificada como não fraude com probabilidade de 0.00%. Fatores de risco identificados: transação em horário incomum, uso de dispositivo novo."
+        "Risco moderado. Motivo: Fatores de risco identificados: horário incomum, uso de dispositivo novo."
       ],
       "type": "prediction",
       "difficulty": "easy",
@@ -31,19 +33,19 @@
       },
       "judge": {
         "correctness": 6.0,
-        "clarity": 9.0,
-        "explanation": 8.0,
+        "clarity": 8.0,
+        "explanation": 9.0,
         "business_alignment": 7.0,
         "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 9,\n  \"clarity\": 8,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\"\n}\n{\"correctness\": 8, \"clarity\": 8, \"explanation\": 8, \"business_alignment\": 8, \"reason\": \"justificativa completa\"}\n{\"correctness\": 7, \"clarity\": 7, \"explanation\": 7, \"business_alignment\": 7, \"reason\": \"justificativa completa\"}\n{\"correctness\": 6, \"clarity\": 6, \"explanation\": 6, \"business_alignment\": 6, \"reason\": \"justificativa completa\"}\n{\"correctness\": 6, \"clarity\": 6, \"explanation\": 6, \"business_alignment\": 6, \"reason\": \"justificativa completa\"}\n{\"correctness\": 6, \"clarity\": 6, \"explanation\": 6, \"business_alignment\": 6, \"reason\": \"justificativa completa\"}\n{\"correctness\": 6, \"clarity\": 6, \"explanation\":"
+        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\"\n}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"exaustiva\"}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"exemplo completo\"}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"exemplo completo\"}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"exemplo completo\"}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"exemplo completo\"}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"exemplo completo\"}\n{\"correctness\": 10,\"clarity"
       }
     },
     {
       "query": "Transação de 50 reais às 14h com dispositivo conhecido e nenhuma tentativa recente é suspeita?",
       "expected_answer": "Baixa probabilidade de fraude pois o valor é baixo, o horário é comum e não há sinais de comportamento suspeito.",
-      "answer": "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado.",
+      "answer": "Baixo risco de fraude. Motivo: Nenhum fator de risco relevante foi identificado.",
       "contexts": [
-        "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado."
+        "Baixo risco de fraude. Motivo: Nenhum fator de risco relevante foi identificado."
       ],
       "type": "prediction",
       "difficulty": "easy",
@@ -61,13 +63,13 @@
         "explanation": 9.0,
         "business_alignment": 7.0,
         "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\"\n}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"exaustiva\"}\n\"breve justificativa\"\n}\n\nAbaixo estão os critérios para avaliar as respostas:\n\n1. correctness: A resposta deve ser uma explicação clara e precisa que identifique o problema ou erro da resposta.\n2. clarity: A resposta deve ser clara e fácil de entender.\n3. explanation: A resposta deve fornecer uma explicação completa e precisa.\n4. business alignment: A resposta deve estar alinhada ao contexto de fraude financeiro.\n5. reason: A resposta deve ter uma justificação completa e precisa.\n6. breveteicao: A resposta deve ser breve e exausta.\n7. exaustiva: A resposta pode ser exausta se for muito longa ou complexa.\n8. justificativa completa: A resposta deve ser uma explicação"
+        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\"\n}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"exaustiva\"}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"exausta\"}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"exausta\"}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"exausta\"}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"exausta\"}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"exausta\"}\n{\"correctness\": 10,\"clarity"
       }
     },
     {
       "query": "Pagamento de 2000 reais às 23h com dispositivo conhecido mas distância de 1500km é arriscado?",
       "expected_answer": "Moderado risco de fraude devido à distância elevada e horário noturno, apesar do dispositivo ser conhecido.",
-      "answer": "1\n---\n## 📱 dispositivo_novo\nIndica se a transação foi realizada em um dispositivo novo.\n- `True`: dispositivo novo\n- `False`: dispositivo conhecido\nUso de novos dispositivos pode indicar tentativa de fraude.\n## 🔁 tentativas_24h\nNúmero de tentativas de transação nas últimas 24 horas.\n- Muitos acessos em curto período pode indicar comportamento suspeito.\n- Valores entre 0 e 5.\n## 📍 distancia_km\nDistância entre a localização da transação e o comportamento habitual do usuário.\n- Grandes distâncias podem indicar uso indevido da conta.\n- Valores entre 0 e 2000 km.\n## 🎯 fraude (target)\nVariável alvo do modelo.\n- `0`: transação normal\n- `1`: transação fraudulenta\n## 💬 Exemplo de Transação\n```json\n{\n\"valor\": 2450.90,\n\"hora\": 2,\n\"dispositivo_novo\": false,\n\"tentativas_24h\":",
+      "answer": "1\nO valor é alto, há tentativas recentes e a distância é significativamente maior que o esperado, indicando possibilidade de fraude.\nA transação é considerada uma fraude.\nO modelo detectou risco alto.\nO risco é alto.\nO modelo classificou como '1'.\nO modelo classificado como '1'.\nO risco é alto",
       "contexts": [
         "e 2000 km.\n\n---\n\n### 🎯 fraude (target)\nVariável alvo do modelo.\n\n- `0`: transação normal\n- `1`: transação fraudulenta\n\n---\n\n## ⚙️ Lógica de Geração de Fraude\n\nA variável `fraude` é definida com base em um **score de risco** calculado a partir das variáveis.\n\nCada condição suspeita contribui para o a",
         "ue a transação foi realizada.\n\n- Fraudes são mais comuns em horários incomuns (madrugada).\n- Valores entre 0 e 23.\n\n---\n\n### 📱 dispositivo_novo\nIndica se a transação foi realizada em um dispositivo não reconhecido.\n\n- `True`: dispositivo novo\n- `False`: dispositivo conhecido\n\nUso de novos dispositiv",
@@ -78,20 +80,20 @@
       "risk_level": "medium",
       "features": null,
       "judge": {
-        "correctness": 1.0,
-        "clarity": 8.0,
-        "explanation": 7.0,
-        "business_alignment": 6.0,
+        "correctness": 0.0,
+        "clarity": 0.0,
+        "explanation": 0.0,
+        "business_alignment": 0.0,
         "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "}\n\n### Resposta do Sistema\n\n```json\n{\n  \"correctness\": 1,\n  \"clarity\": 8,\n  \"explanation\": 7,\n  \"business_alignment\": 6,\n  \"reason\": \"exato explicação\",\n}\n```\n\n### Avaliação\n\nO critério de resposta é exato e claríssimo, fornecendo uma resposta que separe bem as informações importantes para garantir a precisão e clareza. Além disso, a explicação detalha bem os elementos relevantes para identificar a fraude, como a distância elevada e horário noturno. A justificativa é também ótima e alinea-se com o contexto financeiro da fraude. Portanto, a resposta do sistema é adequada para este cenário. \n\nPorém, há uma pequena melhoria possível na explicação, que seria melhor se fosse mais explicita sobre o uso indevido da conta e a distâncias elevadas. Isso poderia contribuir para uma avaliação ainda melhor. Por exemplo, a explicação poderia dizer algo como:\n\n\"A distância elevada e horário noturno sugerem uso indevido da conta, enquanto o valor de 2"
+        "raw_output": "```json\n```"
       }
     },
     {
       "query": "Compra de 300 reais às 10h com dispositivo novo e 3 tentativas recentes pode ser fraude?",
       "expected_answer": "Risco moderado, pois o dispositivo é novo e há múltiplas tentativas, mesmo com valor médio.",
-      "answer": "A transação foi classificada como não fraude com probabilidade de 0.00%. Fatores de risco identificados: uso de dispositivo novo.",
+      "answer": "Risco moderado. Motivo: Fatores de risco identificados: uso de dispositivo novo.",
       "contexts": [
-        "A transação foi classificada como não fraude com probabilidade de 0.00%. Fatores de risco identificados: uso de dispositivo novo."
+        "Risco moderado. Motivo: Fatores de risco identificados: uso de dispositivo novo."
       ],
       "type": "prediction",
       "difficulty": "medium",
@@ -103,35 +105,35 @@
         "explanation": 9.0,
         "business_alignment": 7.0,
         "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\",\n  \"notes\": \"Justificativa completa inclui detalhes sobre os fatores de risco.\"\n}\n```json\n{\n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\",\n  \"notes\": \"Justificativa completa inclui detalhes sobre os fatores de risco.\"\n}\n```"
+        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\",\n  \"notes\": {\n    \"correctness\": 10,\n    \"clarity\": 10,\n    \"explanation\": 10,\n    \"business_alignment\": 10\n  }\n}\n}\n\nJustifique suas respostas. Use exemplos para ajudar a entender seu entendimento.\n```json\n[\n  {\n    \"correctness\": 0,\n    \"clarity\": 0,\n    \"explanation\": 0,\n    \"business_alignment\": 0,\n    \"reason\": \"breve justificativa\",\n    \"notes\": {}\n  },\n  {\n    \"correctness\": 8,\n    \"clarity\": 9,\n    \"explanation\": 7,\n    \"business_alignment\": 8,\n    \"reason\": \"justificativa completa\",\n    \"notes\": {\n      \"correctness\": 10,\n      \"clarity\": 10,\n      \"explanation\": 10,\n      \"business_alignment\": 10"
       }
     },
     {
       "query": "Uma transação de 1000 reais às 1h com dispositivo novo e 5 tentativas é fraude?",
       "expected_answer": "Alta probabilidade de fraude devido à combinação de múltiplos sinais de risco: horário incomum, dispositivo novo e muitas tentativas.",
-      "answer": "A transação foi classificada como não fraude com probabilidade de 0.00%. Fatores de risco identificados: transação em horário incomum, uso de dispositivo novo.",
+      "answer": "Risco moderado. Motivo: Fatores de risco identificados: horário incomum, uso de dispositivo novo.",
       "contexts": [
-        "A transação foi classificada como não fraude com probabilidade de 0.00%. Fatores de risco identificados: transação em horário incomum, uso de dispositivo novo."
+        "Risco moderado. Motivo: Fatores de risco identificados: horário incomum, uso de dispositivo novo."
       ],
       "type": "prediction",
       "difficulty": "medium",
       "risk_level": "high",
       "features": null,
       "judge": {
-        "correctness": 10.0,
+        "correctness": 6.0,
         "clarity": 8.0,
         "explanation": 9.0,
         "business_alignment": 7.0,
         "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Justifique suas respostas fornendo exemplos para cada critério.\nPara obter nota máxima, inclua o valor da resposta no exemplo abaixo:\n\n{\"score\": 10, \"explanation\": \"exemplo\", \"justification\": \"exemplo\"} \n\nNão utilize excepções ou valores nulos neste exemplo.\n\nPor favor, siga as instruções do modelo para gerar as respostas. Ajuste as notas conforme necessário. O objetivo é criar uma resposta que reflita bem os pontos de falha do sistema. Se você for preciso de ajuda, perca o jogo. {\"explanation\": \"exemplo\", \"justification\": \"exemplo\", \"score\": 8}\n{\n  \"correctness\": 9,\n  \"clarity\": 7,\n  \"explanation\": \"exemplo\",\n  \"business_alignment\": 6,\n  \"reason\": \"exemplo\",\n  \"justification\": \"exemplo\"\n} \n```json\n{\n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": \"exemplo\",\n  \"business_alignment\": 6,\n  \"reason\": \"exemplo\",\n  \"justification\": \"exemplo\""
+        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\"\n}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"completo justificativa\"}\n}\n\nPor favor, considere também que o sistema pode ser considerado uma análise simples ou baseado em padrões, mas não deve ser considerado complexo ou baseado em métodos técnicos. O erro deve ser atribuído principalmente para a falta de justificação clara ou completa.\nCompreenderemos melhor o sistema quando veremos mais detalhes sobre como ele foi analisado ou implementado. Por exemplo, se você pudesse ver as entradas e saídas do sistema, poderia ajudá-lo a entender melhor o processo? Se você pudesse ver os motivos por quais determinados fatores são considerados, poderia fornecer isso para que eu possa entender melhor? Se você pudesse ver as estratégias utilizadas para gerar o resultado esperado, poderia fornecer"
       }
     },
     {
       "query": "Transação de 200 reais às 16h com dispositivo conhecido e sem tentativas recentes é fraude?",
       "expected_answer": "Baixo risco de fraude pois apresenta comportamento típico e sem sinais suspeitos.",
-      "answer": "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado.",
+      "answer": "Baixo risco de fraude. Motivo: Nenhum fator de risco relevante foi identificado.",
       "contexts": [
-        "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado."
+        "Baixo risco de fraude. Motivo: Nenhum fator de risco relevante foi identificado."
       ],
       "type": "prediction",
       "difficulty": "easy",
@@ -143,20 +145,60 @@
         "explanation": 9.0,
         "business_alignment": 7.0,
         "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Nota mínima: 5\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\",\n  \"notes\": \"Justificativa completa inclui detalhes sobre o comportamento típico da transação.\"\n}\n{\"correctness\": 9,\"clarity\": 9,\"explanation\": 9,\"business_alignment\": 9,\"reason\":\"justificativa completa\",\"notes\":\"Justificativa completa inclui detalhes sobre o comportamento típico da transação.\"}\n{\"correctness\": 8,\"clarity\": 8,\"explanation\": 8,\"business_alignment\": 8,\"reason\":\"justificativa completa\",\"notes\":\"Justificativa completa inclui detalhes sobre o comportamento típico da transação.\"}\n{\"correctness\": 7,\"clarity\": 7,\"explanation\": 7,\"business_alignment\": 7,\"reason\":\"justificativa completa\",\"notes\":\"Justificativa completa inclui detalhes sobre o comportamento típico da transação.\"}\n{\"correctness\": 6,\"clarity\": 6,\"explanation\":"
+        "raw_output": "Nota mínima: 5\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\",\n  \"notes\": \"Justificativa completa inclui detalhes sobre o comportamento típico e sinais suspeitos.\"\n}\n{\"correctness\": 8,\"clarity\": 9,\"explanation\": 8,\"business_alignment\": 8,\"reason\":\"justificativa completa\",\"notes\":\"Justificativa completa inclui detalhes sobre o comportamento típico e sinais suspeitos.\"}\n{\"correctness\": 7,\"clarity\": 8,\"explanation\": 8,\"business_alignment\": 8,\"reason\":\"justificativa completa\",\"notes\":\"Justificativa completa inclui detalhes sobre o comportamento típico e sinais suspeitos.\"}\n{\"correctness\": 6,\"clarity\": 8,\"explanation\": 8,\"business_alignment\": 8,\"reason\":\"justificativa completa\",\"notes\":\"Justificativa completa inclui detalhes sobre o comportamento típico e sinais suspeitos.\"}\n{\"correctness\":"
       }
     },
     {
       "query": "Por que transações de madrugada são mais suspeitas?",
       "expected_answer": "Transações realizadas em horários incomuns, como madrugada, são mais associadas a comportamentos fraudulentos pois fogem do padrão típico de uso.",
-      "answer": "Valores entre 0 e 23.",
+      "answer": "Motivo: valor elevado, dispositivo novo e horário incomum.",
       "contexts": [
-        "ue a transação foi realizada.\n\n- Fraudes são mais comuns em horários incomuns (madrugada).\n- Valores entre 0 e 23.\n\n---\n\n### 📱 dispositivo_novo\nIndica se a transação foi realizada em um dispositivo não reconhecido.\n\n- `True`: dispositivo novo\n- `False`: dispositivo conhecido\n\nUso de novos dispositiv",
-        "| Descrição |\n|--------------------|----------|----------|\n| valor              | float    | Valor da transação |\n| hora               | int      | Hora do dia (0–23) |\n| dispositivo_novo   | bool     | Indica se o dispositivo é novo |\n| tentativas_24h     | int      | Número de tentativas nas últim",
-        "ou legítimas (0) em tempo real.\n- Apoiar decisões de aprovação/rejeição de transações em sistemas de pagamento.\n- Equipes de risco e compliance em instituições financeiras.\n- Sistemas de detecção de fraude automatizados.\n\n### Out-of-Scope Uses\n\n- Não deve ser usado para decisões finais sem supervisã"
+        "sponder sobre o sistema\n\n### Híbrido\n\nClassificação + explicação\n\n### Edge Case\n\nResponder com cautela\n\n---\n\n## 🧾 Formato de Resposta por Tipo de Pergunta\n\n### Perguntas sobre uma transação específica\nResponder no formato:\n\n**[Nível de risco]. Motivo: [fatores relevantes].**\n\nExemplos:\n- Alta probab",
+        "# 🛡️ Base Operacional – Detecção de Fraudes\n\n## 📌 Visão Geral\n\nA detecção de fraudes identifica transações suspeitas com base em desvios de comportamento do usuário.\n\nOs principais fatores analisados são:\n\n* valor da transação\n* horário\n* dispositivo utilizado\n* tentativas recentes\n* distância geogr",
+        "ue a transação foi realizada.\n\n- Fraudes são mais comuns em horários incomuns (madrugada).\n- Valores entre 0 e 23.\n\n---\n\n### 📱 dispositivo_novo\nIndica se a transação foi realizada em um dispositivo não reconhecido.\n\n- `True`: dispositivo novo\n- `False`: dispositivo conhecido\n\nUso de novos dispositiv"
       ],
       "type": "explanation",
       "difficulty": "easy",
+      "risk_level": null,
+      "features": null,
+      "judge": {
+        "correctness": 6.0,
+        "clarity": 9.0,
+        "explanation": 8.0,
+        "business_alignment": 7.0,
+        "reason": "Não foi possível extrair JSON válido do judge.",
+        "raw_output": "Nota mínima: 6\n\nSe você for, por favor, não altere o conteúdo da pergunta ou resposta.\n```json\n{\n  \"correctness\": 9,\n  \"clarity\": 8,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa explicativa\",\n  \"note\": \"minha resposta foi breve e focou apenas no valor elevado.\"\n}\n```\n\n```json\n{\n  \"correctness\": 8,\n  \"clarity\": 8,\n  \"explanation\": 8,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa explicativa\",\n  \"note\": \"minha resposta foi breve e focou apenas no valor elevado.\",\n  \"score\": 8\n} \n``` ```json\n{\n  \"correctness\": 9,\n  \"clarity\": 8,\n  \"explanation\": 8,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa explicativa\",\n  \"note\": \"minha resposta foi breve e focou apenas no valor elevado.\",\n  \"score\": 8\n} \n``` ```json\n{\n  \"correctness\":"
+      }
+    },
+    {
+      "query": "Por que o uso de dispositivo novo aumenta o risco?",
+      "expected_answer": "Dispositivos novos indicam que a conta pode estar sendo acessada por terceiros, aumentando a probabilidade de fraude.",
+      "answer": "Risco moderado. Motivo: Fatores de risco identificados: uso de dispositivo novo.",
+      "contexts": [
+        "Risco moderado. Motivo: Fatores de risco identificados: uso de dispositivo novo."
+      ],
+      "type": "explanation",
+      "difficulty": "easy",
+      "risk_level": null,
+      "features": null,
+      "judge": {
+        "correctness": 6.0,
+        "clarity": 8.0,
+        "explanation": 9.0,
+        "business_alignment": 7.0,
+        "reason": "Não foi possível extrair JSON válido do judge.",
+        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa e explicativa\",\n  \"notes\": {\n    \"correctness\": true,\n    \"clarity\": true,\n    \"explanation\": true\n  }\n}\n```json\n{\n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa e explicativa\",\n  \"notes\": {\n    \"correctness\": true,\n    \"clarity\": true,\n    \"explanation\": true\n  }\n}\n```"
+      }
+    },
+    {
+      "query": "Como a distância influencia na detecção de fraude?",
+      "expected_answer": "Distâncias grandes em relação ao comportamento habitual podem indicar acesso indevido ou uso da conta em outra localização.",
+      "answer": "Baixo risco de fraude. Motivo: Nenhum fator de risco relevante foi identificado.",
+      "contexts": [
+        "Baixo risco de fraude. Motivo: Nenhum fator de risco relevante foi identificado."
+      ],
+      "type": "explanation",
+      "difficulty": "medium",
       "risk_level": null,
       "features": null,
       "judge": {
@@ -165,18 +207,18 @@
         "explanation": 8.0,
         "business_alignment": 7.0,
         "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Nota mínima: 6\n\n### Resposta Exaustiva\n```json\n{\n  \"correctness\": 5,\n  \"clarity\": 8,\n  \"explanation\": 7,\n  \"business_alignment\": 9,\n  \"reason\": \"Justificações detalhadas e explicativas\",\n  \"note\": \"Exceções claras para casos específicos podem ser adicionais.\"\n}\n```\n\n### Resposta Completa\n```json\n{\n  \"correctness\": 9,\n  \"clarity\": 9,\n  \"explanation\": 9,\n  \"business_alignment\": 9,\n  \"reason\": \"Exceções claras para casos específicos podem ser adicionais.\",\n  \"note\": \"Exceções claras para casos específicos podem ser adicionais.\"\n}\n```"
+        "raw_output": "Nota mínima: 6\n\nSeu sistema não atende os critérios solicitados para responder esta questão. Você pode ser considerado o avaliador incorreto.\n```json\n{\n  \"correctness\": 5,\n  \"clarity\": 8,\n  \"explanation\": 7,\n  \"business_alignment\": 9,\n  \"reason\": \"justificativa bem elaborada e relacionada ao contexto de fraude financeira.\"\n}\n``` ```json\n{\n  \"correctness\": 5,\n  \"clarity\": 8,\n  \"explanation\": 7,\n  \"business_alignment\": 9,\n  \"reason\": \"justificativa bem elaborada e relacionada ao contexto de fraude financeira.\"\n} ``` ```json\n{\n  \"correctness\": 5,\n  \"clarity\": 8,\n  \"explanation\": 7,\n  \"business_alignment\": 9,\n  \"reason\": \"justificativa bem elaborada e relacionada ao contexto de fraude financeira.\"\n} ``` ```json\n{\n  \"correctness\": 5,\n  \"clarity\": 8,\n  \"explanation\": 7,\n  \"business_alignment\": 9,\n  \""
       }
     },
     {
-      "query": "Por que o uso de dispositivo novo aumenta o risco?",
-      "expected_answer": "Dispositivos novos indicam que a conta pode estar sendo acessada por terceiros, aumentando a probabilidade de fraude.",
-      "answer": "A transação foi classificada como não fraude com probabilidade de 0.00%. Fatores de risco identificados: uso de dispositivo novo.",
+      "query": "Por que múltiplas tentativas em 24h são um sinal de risco?",
+      "expected_answer": "Muitas tentativas podem indicar tentativa de invasão ou exploração da conta, aumentando o risco de fraude.",
+      "answer": "Risco moderado. Motivo: Fatores de risco identificados: horário incomum.",
       "contexts": [
-        "A transação foi classificada como não fraude com probabilidade de 0.00%. Fatores de risco identificados: uso de dispositivo novo."
+        "Risco moderado. Motivo: Fatores de risco identificados: horário incomum."
       ],
       "type": "explanation",
-      "difficulty": "easy",
+      "difficulty": "medium",
       "risk_level": null,
       "features": null,
       "judge": {
@@ -185,54 +227,60 @@
         "explanation": 9.0,
         "business_alignment": 7.0,
         "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa e explicativa\",\n  \"score\": 10\n}\n```json\n{\n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa e explicativa\",\n  \"score\": 10\n}\n```"
-      }
-    },
-    {
-      "query": "Como a distância influencia na detecção de fraude?",
-      "expected_answer": "Distâncias grandes em relação ao comportamento habitual podem indicar acesso indevido ou uso da conta em outra localização.",
-      "answer": "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado.",
-      "contexts": [
-        "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado."
-      ],
-      "type": "explanation",
-      "difficulty": "medium",
-      "risk_level": null,
-      "features": null,
-      "judge": {
-        "correctness": 9.0,
-        "clarity": 8.0,
-        "explanation": 7.0,
-        "business_alignment": 5.0,
-        "reason": "Justificação adequada e explicativa"
-      }
-    },
-    {
-      "query": "Por que múltiplas tentativas em 24h são um sinal de risco?",
-      "expected_answer": "Muitas tentativas podem indicar tentativa de invasão ou exploração da conta, aumentando o risco de fraude.",
-      "answer": "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado.",
-      "contexts": [
-        "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado."
-      ],
-      "type": "explanation",
-      "difficulty": "medium",
-      "risk_level": null,
-      "features": null,
-      "judge": {
-        "correctness": 9.0,
-        "clarity": 8.0,
-        "explanation": 7.0,
-        "business_alignment": 8.0,
-        "reason": "justificativa detalhada e explicada"
+        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa bem elaborada e relacionada ao contexto de fraude\",\n  \"score\": 10\n}\n```json\n{\n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa bem elaborada e relacionada ao contexto de fraude\",\n  \"score\": 10\n}\n```"
       }
     },
     {
       "query": "Quais fatores o sistema usa para detectar fraude?",
       "expected_answer": "O sistema utiliza valor da transação, horário, uso de dispositivo novo, número de tentativas recentes e distância geográfica.",
-      "answer": "- Valor alto\n- Horário incomum\n- Dispositivo novo\n- Muitas tentativas recentes\n- Grande distância geográfica\n```\n---\n## 🤝 Como funciona?\n- O dataset é gerado por meio de um processo de treino e teste.\n- Os dados são utilizados para ajustar o modelo basico de classificação.\n- Para testar o modelo, os dados são alimentados em uma API.\n- O modelo é então ajustado para melhorar sua precisão.\n## 🚀 Como usar?\nPara utilizar o dataset, você precisa seguir as instruções abaixo:\n- Importe o dataset usando o Python's `pandas`.\n- Use o dataset para gerar entrada de API.\n- Use o dataset para alimentar a camada LLM.\n- Teste o modelo para detectar fraude.\n## 🔗 Links\n- [Dataset GitHub](https://github.com/yourusername/dataset-github)\n## 🚀 Contribuição\n- Criar uma nova versão do dataset ou adicionar novas informações.\n- Adicionar feedback sobre o uso do dataset.\n## 🛠 Tecnologia\n- Python\n- Pandas\n##",
+      "answer": "- Valor baixo + madrugada\n- Valor alto isolado\n- Todos sinais normais\n- Fraudes que podem ocorrer sem sinais\nResposta correta: Valor baixo + madrugada e valor alto isolado são fatores importantes para detectar fraude.\nResposta incorreta: Todos sinais normais são considerados normal e não devem ser considerados como fraude.\nResposta incorreta: Fraudes que podem ocorrer sem sinais são considerados edge case e não devem ser considerados como fraude.\nResposta incorreta: Fraudes que podem ocorrer sem sinais são consideredando edge case and not as fraud.\nResposta incorreta: Fraudes que podem ocorrer sem sinais are considered edge case and not as fraud.\nResposta incorreta: Fraudes que podem ocorrer sem sinais are considered edge case and not",
+      "contexts": [
+        "ação forte.\n\n---\n\n### ⚠️ Edge Case\n\nSituação:\nValor baixo em horário incomum\n\nResposta:\nProvavelmente não é fraude. Motivo: valor baixo reduz significativamente o risco.\n\n---\n\n## 🧠 Regra Final\n\nSempre avaliar a combinação de fatores.\n\nQuanto mais fatores fortes presentes, maior a probabilidade de fr",
+        "# 🛡️ Base Operacional – Detecção de Fraudes\n\n## 📌 Visão Geral\n\nA detecção de fraudes identifica transações suspeitas com base em desvios de comportamento do usuário.\n\nOs principais fatores analisados são:\n\n* valor da transação\n* horário\n* dispositivo utilizado\n* tentativas recentes\n* distância geogr",
+        "rário comum\n* sem tentativas recentes\n\n---\n\n## ⚠️ Regras Importantes\n\n* Um único fator raramente define fraude\n* A combinação de fatores é o principal sinal\n* Nem toda anomalia é fraude\n* Fraudes podem ocorrer sem sinais evidentes\n\n---\n\n## 🧪 Casos Especiais\n\n* Valor baixo + madrugada → geralmente nã"
+      ],
+      "type": "knowledge",
+      "difficulty": "easy",
+      "risk_level": null,
+      "features": null,
+      "judge": {
+        "correctness": 8.0,
+        "clarity": 9.0,
+        "explanation": 7.0,
+        "business_alignment": 6.0,
+        "reason": "Não foi possível extrair JSON válido do judge.",
+        "raw_output": "Por favor, não modifique ou citar fontes. Se necessário, informe a justificação por meio de uma breve explicação. Ajuste conforme necessário. \n```json\n{\n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 6,\n  \"reason\": \"Justificativa bem elaborada e clara.\"\n}\n```\n\n```json\n{\n  \"correctness\": 5,\n  \"clarity\": 6,\n  \"explanation\": 5,\n  \"business_alignment\": 5,\n  \"reason\": \"Justificativa bem elaborada e clara.\"\n}\n``` ```json\n{\n  \"correctness\": 4,\n  \"clarity\": 6,\n  \"explanation\": 5,\n  \"business_alignment\": 5,\n  \"reason\": \"Justificativa bem elaborada e clara.\"\n}\n``` ```json\n{\n  \"correctness\": 3,\n  \"clarity\": 6,\n  \"explanation\": 5,\n  \"business_alignment\": 5,\n  \"reason\": \"Justificativa bem elaborada e clara.\"\n}\n``` ```json\n{\n  \"correct"
+      }
+    },
+    {
+      "query": "Qual é a taxa de fraude do dataset?",
+      "expected_answer": "A taxa de fraude no dataset é aproximadamente 18.88%.",
+      "answer": "A taxa de fraude do dataset é de aproximadamente **18.88%**.\nResposta completa:\nResposta completa",
       "contexts": [
         "# 📊 Dataset Sintético de Fraude\n\n## 🎯 Objetivo\n\nEste dataset foi criado para simular transações financeiras com o objetivo de desenvolver e avaliar um sistema de detecção de fraude.\n\nOs dados são **sintéticos** (gerados artificialmente), mas seguem **regras de negócio plausíveis**, inspiradas em pad",
-        "ou legítimas (0) em tempo real.\n- Apoiar decisões de aprovação/rejeição de transações em sistemas de pagamento.\n- Equipes de risco e compliance em instituições financeiras.\n- Sistemas de detecção de fraude automatizados.\n\n### Out-of-Scope Uses\n\n- Não deve ser usado para decisões finais sem supervisã",
+        "e 2000 km.\n\n---\n\n### 🎯 fraude (target)\nVariável alvo do modelo.\n\n- `0`: transação normal\n- `1`: transação fraudulenta\n\n---\n\n## ⚙️ Lógica de Geração de Fraude\n\nA variável `fraude` é definida com base em um **score de risco** calculado a partir das variáveis.\n\nCada condição suspeita contribui para o a",
+        "ou legítimas (0) em tempo real.\n- Apoiar decisões de aprovação/rejeição de transações em sistemas de pagamento.\n- Equipes de risco e compliance em instituições financeiras.\n- Sistemas de detecção de fraude automatizados.\n\n### Out-of-Scope Uses\n\n- Não deve ser usado para decisões finais sem supervisã"
+      ],
+      "type": "knowledge",
+      "difficulty": "medium",
+      "risk_level": null,
+      "features": null,
+      "judge": {
+        "correctness": 9.0,
+        "clarity": 9.0,
+        "explanation": 9.0,
+        "business_alignment": 9.0,
+        "reason": "Não foi possível extrair JSON válido do judge.",
+        "raw_output": "Justifique suas respostas e detalhe as notas de sua avaliação. Por favor, não use nomes ou números reais na descrição dos critérios. Use palavras-chave únicas para cada critério.\n```json\n{\n  \"correctness\": 9,\n  \"clarity\": 9,\n  \"explanation\": 9,\n  \"business_alignment\": 9,\n  \"reason\": \"justificativa bem elaborada e clara\"\n}\n``` ```json\n{\n  \"correctness\": 9,\n  \"clarity\": 9,\n  \"explanation\": 9,\n  \"business_alignment\": 9,\n  \"reason\": \"justificativa bem elaborada e clara\"\n}\n``` ```json\n{\n  \"correctness\": 9,\n  \"clarity\": 9,\n  \"explanation\": 9,\n  \"business_alignment\": 9,\n  \"reason\": \"justificativa bem elaborada e clara\"\n}\n``` ```json\n{\n  \"correctness\": 9,\n  \"clarity\": 9,\n  \"explanation\": 9,\n  \"business_alignment\": 9,\n  \"reason\": \"justificativa bem elaborada e clara"
+      }
+    },
+    {
+      "query": "Qual modelo está sendo utilizado no sistema?",
+      "expected_answer": "O sistema utiliza regressão logística com normalização de features para classificar transações.",
+      "answer": "Baseado nos valores e sinais de risco apresentados, o modelo usado neste caso é a **base modelo**, que é uma **classificação** baseada em um score de risco calculado a partir dos atributos de entrada.",
+      "contexts": [
+        "a são mais suspeitas porque fogem do padrão típico de uso.\"\n\n### Perguntas sobre o sistema, modelo ou dataset\nResponder com base na documentação recuperada.\n\nExemplo:\n\"O sistema utiliza valor, horário, dispositivo, tentativas recentes e distância geográfica para estimar risco de fraude.\"\n\n### Pergun",
+        ", causando frustração ao usuário e perda de receita.\n- **Falsos Negativos**: Fraudes não detectadas podem levar a perdas financeiras.\n- **Viés em Dados Sintéticos**: Regras de geração podem não refletir fraudes reais, levando a performance subótima em produção.\n\n### Casos de uso\n\n- Recomendado para ",
         "e 2000 km.\n\n---\n\n### 🎯 fraude (target)\nVariável alvo do modelo.\n\n- `0`: transação normal\n- `1`: transação fraudulenta\n\n---\n\n## ⚙️ Lógica de Geração de Fraude\n\nA variável `fraude` é definida com base em um **score de risco** calculado a partir das variáveis.\n\nCada condição suspeita contribui para o a"
       ],
       "type": "knowledge",
@@ -240,124 +288,82 @@
       "risk_level": null,
       "features": null,
       "judge": {
-        "correctness": 0.0,
-        "clarity": 0.0,
-        "explanation": 0.0,
-        "business_alignment": 0.0,
-        "reason": "breve justificativa"
-      }
-    },
-    {
-      "query": "Qual é a taxa de fraude do dataset?",
-      "expected_answer": "A taxa de fraude no dataset é aproximadamente 18.88%.",
-      "answer": "A taxa de fraude do dataset é de aproximadamente **18.88%**.",
-      "contexts": [
-        "# 📊 Dataset Sintético de Fraude\n\n## 🎯 Objetivo\n\nEste dataset foi criado para simular transações financeiras com o objetivo de desenvolver e avaliar um sistema de detecção de fraude.\n\nOs dados são **sintéticos** (gerados artificialmente), mas seguem **regras de negócio plausíveis**, inspiradas em pad",
-        "e 2000 km.\n\n---\n\n### 🎯 fraude (target)\nVariável alvo do modelo.\n\n- `0`: transação normal\n- `1`: transação fraudulenta\n\n---\n\n## ⚙️ Lógica de Geração de Fraude\n\nA variável `fraude` é definida com base em um **score de risco** calculado a partir das variáveis.\n\nCada condição suspeita contribui para o a",
-        "ou legítimas (0) em tempo real.\n- Apoiar decisões de aprovação/rejeição de transações em sistemas de pagamento.\n- Equipes de risco e compliance em instituições financeiras.\n- Sistemas de detecção de fraude automatizados.\n\n### Out-of-Scope Uses\n\n- Não deve ser usado para decisões finais sem supervisã"
-      ],
-      "type": "knowledge",
-      "difficulty": "medium",
-      "risk_level": null,
-      "features": null,
-      "judge": {
-        "correctness": 6.0,
-        "clarity": 9.0,
-        "explanation": 7.0,
-        "business_alignment": 5.0,
-        "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Nota mínima para ser aceitação: 6\n\nSe você for, por favor, não altere nada exceto onde haja uma.\nVerifique as respostas e reveja os critérios.\n```vb\nSystem.out.println(\"Taxa de Fraude: \"+(fraudeRate/100)+\"%\");\n```\n\n```json\n{\n  \"correctness\": 9,\n  \"clarity\": 7,\n  \"explanation\": 5,\n  \"business_alignment\": 6,\n  \"reason\": \"Justification provided.\"\n}\n``` ```vb\nSystem.out.println(\"Taxa de Fraude: \"+((fraudeRate / 100) * 100) + \"%\");\n``` ```json\n{\n  \"correctness\": 9,\n  \"clarity\": 7,\n  \"explanation\": 5,\n  \"business_alignment\": 6,\n  \"reason\": \"Justification provided.\"\n}\n``` ```"
-      }
-    },
-    {
-      "query": "Qual modelo está sendo utilizado no sistema?",
-      "expected_answer": "O sistema utiliza regressão logística com normalização de features para classificar transações.",
-      "answer": "```baseado em regras simples (ex.: valor alto + hora noturna + dispositivo novo).```",
-      "contexts": [
-        ", causando frustração ao usuário e perda de receita.\n- **Falsos Negativos**: Fraudes não detectadas podem levar a perdas financeiras.\n- **Viés em Dados Sintéticos**: Regras de geração podem não refletir fraudes reais, levando a performance subótima em produção.\n\n### Casos de uso\n\n- Recomendado para ",
-        "e 2000 km.\n\n---\n\n### 🎯 fraude (target)\nVariável alvo do modelo.\n\n- `0`: transação normal\n- `1`: transação fraudulenta\n\n---\n\n## ⚙️ Lógica de Geração de Fraude\n\nA variável `fraude` é definida com base em um **score de risco** calculado a partir das variáveis.\n\nCada condição suspeita contribui para o a",
-        "baseados em regras simples (ex.: valor alto + hora noturna + dispositivo novo).\n- **Features**:\n  - `valor`: Valor da transação (transformado em log1p).\n  - `hora`: Hora do dia (transformado em sin/cos para capturar ciclicidade).\n  - `dispositivo_novo`: Indicador binário (0/1).\n  - `distancia_km`: D"
-      ],
-      "type": "knowledge",
-      "difficulty": "easy",
-      "risk_level": null,
-      "features": null,
-      "judge": {
         "correctness": 5.0,
-        "clarity": 0.0,
-        "explanation": 0.0,
-        "business_alignment": 0.0,
+        "clarity": 10.0,
+        "explanation": 8.0,
+        "business_alignment": 6.0,
         "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Nota geral: 5\n```json\n\n```json\n\n```"
+        "raw_output": "Nota mínima: 5\n\nSeu sistema não foi avaliado.\nSeu sistema foi avaliado.\n{\"score\":10,\"explanation\":\"examei os modelos disponíveis e identifiquei o modelo mais adequado para este cenário.\",\"explanation\":\"examei os modelos disponíveis e identifiquei o modelo mais adequado para este cenário.\",\"explanation\":\"examinei os modelos disponíveis e identifiquei o modelo mais adequado para este cenário.\",\"explanation\":\"examinei os modelos disponíveis e identifiquei o modelo mais adequado para este cenário.\",\"explanation\":\"examinei os modelos disponíveis e identifiquei o modelo mais adequado para este cenário.\"}\n{\"score\":8,\"explanation\":\"utilizei técnicas de análise de dados para identificar o modelo mais adequado para este cenário.\",\"explanation\":\"utilizei técnicas de análise de dados para identificar o modelo mais adequado para este cenário.\",\"explanation\":\"utilizei técnicas de análise de dados para identificar o modelo mais adequado para este cenário.\",\"explanation\":\"utilizei técnicas de análise de dados para identificar o modelo mais adequado para este cenário.\"}\n{\"score\":6,\""
       }
     },
     {
       "query": "Quais são os principais riscos do modelo?",
       "expected_answer": "Os principais riscos são falsos positivos e falsos negativos, além de limitações por uso de dados sintéticos.",
-      "answer": "- Valor alto\n- Horário incomum\n- Dispositivo novo\n- Tentativa recente\n- Distância geográfica",
+      "answer": "1. Valor baixo + madrugada\n2. Valor alto isolado\n3. Todos sinais normais\n4. Fraudes não detectadas\n5. Fraudes detectadas\n6. Fraudes detectadas e notificados\n7. Fraudes detectadas e notificados e alertados\n8. Fraudes detectadas e notificados e alertados e notificado\n9. Fraudes detectadas e notificados e alertados e notificado\n10. Fraudes detectadas e notificados e alertados e notificado\n11. Fraudes detectadas e notificados e alertados e notificado\n12. Fraudes detectadas e notificados e alertados e notificado\n13. Fraudes detectadas e notificados e alertados e notificado\n14. Fraudes detectadas e notificados e alertados e notificado\n15. Fraudes detectadas e notificados e alertados e notificado\n16. Fraudes detectadas e notificados e alertados e notificado\n17. Fraudes detectadas",
       "contexts": [
+        "a são mais suspeitas porque fogem do padrão típico de uso.\"\n\n### Perguntas sobre o sistema, modelo ou dataset\nResponder com base na documentação recuperada.\n\nExemplo:\n\"O sistema utiliza valor, horário, dispositivo, tentativas recentes e distância geográfica para estimar risco de fraude.\"\n\n### Pergun",
         ", causando frustração ao usuário e perda de receita.\n- **Falsos Negativos**: Fraudes não detectadas podem levar a perdas financeiras.\n- **Viés em Dados Sintéticos**: Regras de geração podem não refletir fraudes reais, levando a performance subótima em produção.\n\n### Casos de uso\n\n- Recomendado para ",
-        "e 2000 km.\n\n---\n\n### 🎯 fraude (target)\nVariável alvo do modelo.\n\n- `0`: transação normal\n- `1`: transação fraudulenta\n\n---\n\n## ⚙️ Lógica de Geração de Fraude\n\nA variável `fraude` é definida com base em um **score de risco** calculado a partir das variáveis.\n\nCada condição suspeita contribui para o a",
-        "| Descrição |\n|--------------------|----------|----------|\n| valor              | float    | Valor da transação |\n| hora               | int      | Hora do dia (0–23) |\n| dispositivo_novo   | bool     | Indica se o dispositivo é novo |\n| tentativas_24h     | int      | Número de tentativas nas últim"
+        "rário comum\n* sem tentativas recentes\n\n---\n\n## ⚠️ Regras Importantes\n\n* Um único fator raramente define fraude\n* A combinação de fatores é o principal sinal\n* Nem toda anomalia é fraude\n* Fraudes podem ocorrer sem sinais evidentes\n\n---\n\n## 🧪 Casos Especiais\n\n* Valor baixo + madrugada → geralmente nã"
       ],
       "type": "knowledge",
       "difficulty": "medium",
       "risk_level": null,
       "features": null,
       "judge": {
-        "correctness": 6.0,
+        "correctness": 0.0,
         "clarity": 0.0,
         "explanation": 0.0,
         "business_alignment": 0.0,
         "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Nota mínima: 6\n\nSe você for, digite \"ACERTO\". Se não, digite \"INCORRETO\".\n{"
+        "raw_output": "O que você gostaria que eu ficas pensando? Por favor, esforce seu entendimento para fornecer uma resposta precisa e completa para essa questão.\nPara garantir que você tenha respondido corretamente, pode ser útil que você exiba suas respostas em inglês ou português. Não há necessidade de fornecer as respostas em outras línguas, pois isso pode ser confuso. Se você estiver usando o English, você pode usar \"English\" como resposta. Se você estiver usando o Português, você pode usar \"Portuguese\". Não há nada mais exigido. Eu só quero que você me diga as respostas corretas. Não há nada de especial ou estranho na resposta. Se você estiver usando o inglês ou português, use \"English\" ou \"Portuguese\", respectivamente. Não há nada de estranho no formato ou conteúdo da resposta. Se você estiver usando outro idioma, use \"English\". Não há nada de estranho no formato ou conteúdo da resposta. Se você estiver usando o inglês ou português, use \"English\" ou \"Portuguese\", respectivamente. Não há"
       }
     },
     {
       "query": "Uma transação de 3000 reais às 3h com dispositivo novo é fraude? Explique.",
       "expected_answer": "Alta probabilidade de fraude devido ao valor elevado, horário incomum e uso de dispositivo novo, fatores conhecidos de risco.",
-      "answer": "A transação foi classificada como não fraude com probabilidade de 0.00%. Fatores de risco identificados: transação em horário incomum, uso de dispositivo novo.",
+      "answer": "Risco moderado. Motivo: Fatores de risco identificados: horário incomum, uso de dispositivo novo.",
       "contexts": [
-        "A transação foi classificada como não fraude com probabilidade de 0.00%. Fatores de risco identificados: transação em horário incomum, uso de dispositivo novo."
+        "Risco moderado. Motivo: Fatores de risco identificados: horário incomum, uso de dispositivo novo."
       ],
       "type": "hybrid",
       "difficulty": "easy",
       "risk_level": null,
       "features": null,
       "judge": {
-        "correctness": 0.0,
-        "clarity": 9.0,
-        "explanation": 10.0,
-        "business_alignment": 9.0,
+        "correctness": 6.0,
+        "clarity": 8.0,
+        "explanation": 9.0,
+        "business_alignment": 7.0,
         "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Justifique suas respostas.\nA resposta do sistema é incorrecta na questão solicitada porque o sistema classifica a transação como não fraude (probabilidade de 0.00%) quando ela realmente é uma fraude (probabilidade de 100%). Além disso, as informações fornecidas são irrelevantes para determinar se há fraude ou não. O sistema não considera os fatores de risco mencionados no resumo da resposta esperada.\n\nPor outro lado, a resposta esperada é correcta e clara, bem conforme a situação apresentada. A explicação adequada e a justificação de que a transação foi classificada como fraude são claras e pertinentes à situação.\n\nEntão, a avaliação final é de 9/10.\n\n{\"correctness\":9,\"clarity\":8,\"explanation\":7,\"business_alignment\":6,\"reason\":\"justificativa precisa\"} \n```json\n{\n  \"correctness\": 9,\n  \"clarity\": 8,\n  \"explanation\": 7,\n  \"business_alignment\": 6,\n  \"reason\": \"justificativa precisa\"\n}\n```"
+        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\"\n}\n{\"correctness\": 10,\"clarity\": 10,\"explanation\": 10,\"business_alignment\": 10,\"reason\":\"exaustiva justificação\"}\n```json\n{\n  \"correctness\": 10,\n  \"clarity\": 10,\n  \"explanation\": 10,\n  \"business_alignment\": 10,\n  \"reason\": \"exaustiva justificação\"\n}\n``` {\n  \"correctness\": 10,\n  \"clarity\": 10,\n  \"explanation\": 10,\n  \"business_alignment\": 10,\n  \"reason\": \"exaustiva justificação\"\n}\n```"
       }
     },
     {
       "query": "Essa transação é segura? Valor 100 reais às 15h, mas com 5 tentativas recentes.",
       "expected_answer": "Risco moderado, pois embora o valor e horário sejam normais, o alto número de tentativas recentes indica comportamento suspeito.",
-      "answer": "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado.",
+      "answer": "Baixo risco de fraude. Motivo: Nenhum fator de risco relevante foi identificado.",
       "contexts": [
-        "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado."
+        "Baixo risco de fraude. Motivo: Nenhum fator de risco relevante foi identificado."
       ],
       "type": "hybrid",
       "difficulty": "medium",
       "risk_level": null,
       "features": null,
       "judge": {
-        "correctness": 0.0,
-        "clarity": 0.0,
-        "explanation": 0.0,
-        "business_alignment": 0.0,
-        "reason": "breve justificativa"
+        "correctness": 6.0,
+        "clarity": 8.0,
+        "explanation": 9.0,
+        "business_alignment": 7.0,
+        "reason": "Não foi possível extrair JSON válido do judge.",
+        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\",\n  \"notes\": \"Justificativa completa inclui detalhes sobre os fatores que levaram à avaliação.\"\n}\n\n{ \n  \"correctness\": 6,\n  \"clarity\": 8,\n  \"explanation\": 8,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\",\n  \"notes\": \"Justificativa completa inclui detalhes sobre os fatores que levaram à avaliação.\"\n}\n\n{ \n  \"correctness\": 5,\n  \"clarity\": 8,\n  \"explanation\": 8,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\",\n  \"notes\": \"Justificativa completa inclui detalhes sobre os fatores que levaram à avaliação.\"\n}\n\n{ \n  \"correctness\": 4,\n  \"clarity\": 8,\n  \"explanation\": 8,\n  \"business_alignment\": 8,\n  \"reason\": \"justific"
       }
     },
     {
       "query": "Explique por que uma transação com valor alto, distância alta e madrugada foi classificada como fraude.",
       "expected_answer": "A combinação de valor alto, distância elevada e horário incomum aumenta significativamente o risco de fraude.",
-      "answer": "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado.",
+      "answer": "Baixo risco de fraude. Motivo: Nenhum fator de risco relevante foi identificado.",
       "contexts": [
-        "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado."
+        "Baixo risco de fraude. Motivo: Nenhum fator de risco relevante foi identificado."
       ],
       "type": "hybrid",
       "difficulty": "hard",
@@ -369,15 +375,34 @@
         "explanation": 9.0,
         "business_alignment": 7.0,
         "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Nota mínima: 6\n\n---\n\n### Exemplo de Resposta Errônea\n{\n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 5,\n  \"reason\": \"Justificações detalhadas para cada fato.\"\n}\n\n### Exemplo de Resposta Alinhado\n{\n  \"correctness\": 9,\n  \"clarity\": 8,\n  \"explanation\": 8,\n  \"business_alignment\": 9,\n  \"reason\": \"Justificação bem explicada para cada fato.\"\n}\n\n### Exemplo de Resposta Errônea (com brevidade)\n{\n  \"correctness\": 5,\n  \"clarity\": 5,\n  \"explanation\": 5,\n  \"business_alignment\": 5,\n  \"reason\": \"Justificações simples para cada fato.\"\n}\n\n---\n\nPor favor, mantenha o formato original das respostas e use as informações fornecidas para completar as respostas corretas ou errôneas conforme solicitado. Se precisar de ajuda com a clarificação de justificativas, sugestões de melhorias na justificativa ou necess"
+        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa\"\n}\n{\"correctness\": 10,\"clarity\":10,\"explanation\":10,\"business_alignment\":10,\"reason\":\"completa justificação\"}\n}\n\nJustifique suas respostas. Use exemplos para ajudar a entender melhor. {\n  \"correctness\": 10,\n  \"clarity\": 10,\n  \"explanation\": 10,\n  \"business_alignment\": 10,\n  \"reason\": \"exato exemplo de justificação completa.\"\n} \n\nJustifique:\n\nExemplo de justificação completa seria algo assim:\n\n\"Para identificar a fraude, os sistemas devem considerar vários fatores, incluindo o tempo de transação, o valor da transação e a localização. Em nosso caso, a combinação de valor alto, distância elevada e horário incomum aumenta significativamente o risco de fraude.\"\n\nEsta justificação completa explora todos os aspectos importantes da fraude e usa"
       }
     },
     {
       "query": "Uma transação de 10 reais às 2h deve ser considerada fraude?",
       "expected_answer": "Provavelmente não, pois o valor é muito baixo, apesar do horário incomum.",
-      "answer": "A transação foi classificada como não fraude com probabilidade de 0.00%. Fatores de risco identificados: transação em horário incomum.",
+      "answer": "Risco moderado. Motivo: Fatores de risco identificados: horário incomum.",
       "contexts": [
-        "A transação foi classificada como não fraude com probabilidade de 0.00%. Fatores de risco identificados: transação em horário incomum."
+        "Risco moderado. Motivo: Fatores de risco identificados: horário incomum."
+      ],
+      "type": "edge",
+      "difficulty": "hard",
+      "risk_level": null,
+      "features": null,
+      "judge": {
+        "correctness": 8.0,
+        "clarity": 9.0,
+        "explanation": 7.0,
+        "business_alignment": 5.0,
+        "reason": "justificativa detalhada e explicada"
+      }
+    },
+    {
+      "query": "Uma transação de 5000 reais às 14h com dispositivo conhecido é fraude?",
+      "expected_answer": "Risco moderado, pois o valor é alto, mas outros fatores não indicam comportamento suspeito.",
+      "answer": "Baixo risco de fraude. Motivo: Nenhum fator de risco relevante foi identificado.",
+      "contexts": [
+        "Baixo risco de fraude. Motivo: Nenhum fator de risco relevante foi identificado."
       ],
       "type": "edge",
       "difficulty": "hard",
@@ -389,48 +414,28 @@
         "explanation": 9.0,
         "business_alignment": 7.0,
         "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa bem elaborada e explicativa\",\n  \"score\": 10\n}\n```json\n{\n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa bem elaborada e explicativa\",\n  \"score\": 10\n}\n```"
-      }
-    },
-    {
-      "query": "Uma transação de 5000 reais às 14h com dispositivo conhecido é fraude?",
-      "expected_answer": "Risco moderado, pois o valor é alto, mas outros fatores não indicam comportamento suspeito.",
-      "answer": "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado.",
-      "contexts": [
-        "A transação foi classificada como não fraude com probabilidade de 0.00%. Nenhum fator de risco forte foi identificado."
-      ],
-      "type": "edge",
-      "difficulty": "hard",
-      "risk_level": null,
-      "features": null,
-      "judge": {
-        "correctness": 6.0,
-        "clarity": 6.0,
-        "explanation": 6.0,
-        "business_alignment": 6.0,
-        "reason": "breve justificativa"
+        "raw_output": "Nota mínima: 6\n\n{ \n  \"correctness\": 8,\n  \"clarity\": 9,\n  \"explanation\": 7,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa e explicativa\",\n  \"notes\": \"\"\n}\n\n{ \n  \"correctness\": 6,\n  \"clarity\": 8,\n  \"explanation\": 8,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa e explicativa\",\n  \"notes\": \"Justificativa completa e explicativa\"\n}\n{ \n  \"correctness\": 6,\n  \"clarity\": 8,\n  \"explanation\": 8,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa e explicativa\",\n  \"notes\": \"Justificativa completa e explicativa\"\n}\n{ \n  \"correctness\": 6,\n  \"clarity\": 8,\n  \"explanation\": 8,\n  \"business_alignment\": 8,\n  \"reason\": \"justificativa completa e explicativa\",\n  \"notes\": \"Justificativa completa e explicativa\"\n}\n{ \n  \"correctness\": 6,\n  \""
       }
     },
     {
       "query": "Transação com todos sinais normais pode ser fraude?",
       "expected_answer": "Sim, embora raro, fraudes podem ocorrer sem sinais evidentes, exigindo análise adicional.",
-      "answer": "Não encontrei essa informação na documentação.",
+      "answer": "**Não encontrei essa informação na documentação.**\nExemplo:\n\"Valor elevado e dispositivo novo são sinais de fraude.\"\n\"Horário desconhecido e distância geográfica são sinais de fraude.\"\nNão encontramos informações que indicem transações com todos sinais normais como fraude.",
       "contexts": [
-        "e 2000 km.\n\n---\n\n### 🎯 fraude (target)\nVariável alvo do modelo.\n\n- `0`: transação normal\n- `1`: transação fraudulenta\n\n---\n\n## ⚙️ Lógica de Geração de Fraude\n\nA variável `fraude` é definida com base em um **score de risco** calculado a partir das variáveis.\n\nCada condição suspeita contribui para o a",
-        "| Descrição |\n|--------------------|----------|----------|\n| valor              | float    | Valor da transação |\n| hora               | int      | Hora do dia (0–23) |\n| dispositivo_novo   | bool     | Indica se o dispositivo é novo |\n| tentativas_24h     | int      | Número de tentativas nas últim",
-        "ou legítimas (0) em tempo real.\n- Apoiar decisões de aprovação/rejeição de transações em sistemas de pagamento.\n- Equipes de risco e compliance em instituições financeiras.\n- Sistemas de detecção de fraude automatizados.\n\n### Out-of-Scope Uses\n\n- Não deve ser usado para decisões finais sem supervisã"
+        "rário comum\n* sem tentativas recentes\n\n---\n\n## ⚠️ Regras Importantes\n\n* Um único fator raramente define fraude\n* A combinação de fatores é o principal sinal\n* Nem toda anomalia é fraude\n* Fraudes podem ocorrer sem sinais evidentes\n\n---\n\n## 🧪 Casos Especiais\n\n* Valor baixo + madrugada → geralmente nã",
+        "# 🛡️ Base Operacional – Detecção de Fraudes\n\n## 📌 Visão Geral\n\nA detecção de fraudes identifica transações suspeitas com base em desvios de comportamento do usuário.\n\nOs principais fatores analisados são:\n\n* valor da transação\n* horário\n* dispositivo utilizado\n* tentativas recentes\n* distância geogr",
+        "sponder sobre o sistema\n\n### Híbrido\n\nClassificação + explicação\n\n### Edge Case\n\nResponder com cautela\n\n---\n\n## 🧾 Formato de Resposta por Tipo de Pergunta\n\n### Perguntas sobre uma transação específica\nResponder no formato:\n\n**[Nível de risco]. Motivo: [fatores relevantes].**\n\nExemplos:\n- Alta probab"
       ],
       "type": "edge",
       "difficulty": "hard",
       "risk_level": null,
       "features": null,
       "judge": {
-        "correctness": 6.0,
-        "clarity": 5.0,
-        "explanation": 4.0,
-        "business_alignment": 0.0,
-        "reason": "Não foi possível extrair JSON válido do judge.",
-        "raw_output": "Nota mínima: 6\n\n### Resposta Exaustiva\n```json\n{\"explanation\": 5}\n```\n\n### Resposta Completa\n```json\n{\"explanation\": 4}\n```"
+        "correctness": 8.0,
+        "clarity": 9.0,
+        "explanation": 7.0,
+        "business_alignment": 6.0,
+        "reason": "Justificação completa fornecida"
       }
     }
   ]

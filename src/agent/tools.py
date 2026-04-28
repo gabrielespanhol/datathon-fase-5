@@ -23,23 +23,27 @@ def predict_fraud_tool(model, transaction: dict) -> dict:
 
 
 def explain_risk_tool(transaction: dict) -> str:
-    reasons = []
+    factors = []
 
-    if transaction["valor"] > 2000:
-        reasons.append("valor alto")
-    if transaction["hora"] < 6:
-        reasons.append("transação em horário incomum")
+    if transaction["valor"] >= 2000:
+        factors.append("valor elevado")
+
+    if transaction["hora"] <= 5 or transaction["hora"] >= 23:
+        factors.append("horário incomum")
+
     if transaction["dispositivo_novo"]:
-        reasons.append("uso de dispositivo novo")
-    if transaction["tentativas_24h"] >= 5:
-        reasons.append("muitas tentativas nas últimas 24h")
-    if transaction["distancia_km"] > 1000:
-        reasons.append("distância elevada em relação ao padrão esperado")
+        factors.append("uso de dispositivo novo")
 
-    if not reasons:
-        return "Nenhum fator de risco forte foi identificado."
+    if transaction["tentativas_24h"] >= 3:
+        factors.append("múltiplas tentativas recentes")
 
-    return "Fatores de risco identificados: " + ", ".join(reasons) + "."
+    if transaction["distancia_km"] >= 1000:
+        factors.append("distância elevada")
+
+    if not factors:
+        return "Nenhum fator de risco relevante foi identificado."
+
+    return "Fatores de risco identificados: " + ", ".join(factors) + "."
 
 
 def rag_docs_tool(rag_pipeline, question: str) -> dict:

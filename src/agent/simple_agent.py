@@ -7,6 +7,27 @@ from src.agent.tools import (
 )
 
 
+def infer_risk_from_factors(transaction: dict) -> str:
+    score = 0
+
+    if transaction["valor"] >= 2000:
+        score += 1
+    if transaction["hora"] <= 5 or transaction["hora"] >= 23:
+        score += 1
+    if transaction["dispositivo_novo"]:
+        score += 1
+    if transaction["tentativas_24h"] >= 3:
+        score += 1
+    if transaction["distancia_km"] >= 1000:
+        score += 1
+
+    if score >= 3:
+        return "Alta probabilidade de fraude"
+    if score >= 1:
+        return "Risco moderado"
+    return "Baixo risco de fraude"
+
+
 def normalize_question(question: str) -> str:
     q = question.lower().strip()
 
@@ -115,7 +136,7 @@ class SimpleFraudAgent:
 
     def _run_prediction(self, question: str) -> dict:
         transaction = extract_transaction(question)
-
+        risk_level = infer_risk_from_factors(transaction)
         prediction = predict_fraud_tool(self.model, transaction)
         explanation = explain_risk_tool(transaction)
 
@@ -128,11 +149,7 @@ class SimpleFraudAgent:
             "transaction": transaction,
             "prediction": prediction,
             "explanation": explanation,
-            "answer": (
-                f"A transação foi classificada como {prediction['label']} "
-                f"com probabilidade de {prediction['probability']:.2%}. "
-                f"{explanation}"
-            ),
+            "answer": (f"{risk_level}. Motivo: {explanation}"),
         }
 
     def _run_docs(self, question: str) -> dict:
@@ -151,7 +168,7 @@ class SimpleFraudAgent:
         prediction = predict_fraud_tool(self.model, transaction)
         explanation = explain_risk_tool(transaction)
         rag_result = rag_docs_tool(self.rag_pipeline, question)
-
+        risk_level = infer_risk_from_factors(transaction)
         return {
             "intent": "hybrid",
             "tools_used": [
@@ -165,10 +182,8 @@ class SimpleFraudAgent:
             "docs_answer": rag_result["answer"],
             "sources": rag_result.get("sources", []),
             "answer": (
-                f"A transação foi classificada como {prediction['label']} "
-                f"com probabilidade de {prediction['probability']:.2%}. "
-                f"{explanation}\n\n"
-                f"Com base na documentação do projeto: {rag_result['answer']}"
+                f"{risk_level}. Motivo: {explanation}\n\n"
+                f"Complemento: {rag_result['answer']}"
             ),
         }
 

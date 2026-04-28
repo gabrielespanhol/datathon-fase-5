@@ -50,6 +50,7 @@ async def lifespan(app: FastAPI):
 
     rag_pipeline = SimpleRAGPipeline(
         docs_paths=[
+            "docs/FRAUD_KNOWLEDGE_BASE.md",
             "docs/MODEL_CARD.md",
             "DATASET.md",
         ],
