@@ -77,7 +77,7 @@ def evaluate_agent(golden_path: str) -> List[Dict]:
 
 
 if __name__ == "__main__":
-    results = evaluate_agent("evaluation/golden_set.json")
+    results = evaluate_agent("data\\golden_set\\golden_set.json")
 
     # salvar resultado
     with open("evaluation/judge_results.json", "w") as f:

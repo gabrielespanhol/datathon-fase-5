@@ -19,6 +19,7 @@ from src.monitoring.metrics import (
     REQUEST_LATENCY,
 )
 from src.agent.simple_agent import SimpleFraudAgent
+from src.security.guardrails import validate_input, sanitize_output, validate_output
 
 
 logger = logging.getLogger(__name__)
@@ -174,4 +175,15 @@ def run_agent(request: AgentRequest) -> dict:
     if agent is None:
         raise HTTPException(status_code=503, detail="Agente não inicializado.")
 
-    return agent.run(request.question)
+    # Validação de input
+    if not validate_input(request.question):
+        REQUEST_ERRORS.inc()
+        raise HTTPException(status_code=400, detail="Input contém conteúdo proibido.")
+
+    response = agent.run(request.question)
+
+    # Sanitização de output
+    if isinstance(response, dict) and "answer" in response:
+        response["answer"] = sanitize_output(response["answer"])
+
+    return response
