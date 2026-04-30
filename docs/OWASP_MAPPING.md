@@ -175,5 +175,3 @@ LLM revela informações sensíveis através de suas respostas ou logs.
 
 - OWASP Top 10 for Large Language Model Applications (2025)
 - https://owasp.org/www-project-top-10-for-large-language-model-applications/
-
----
