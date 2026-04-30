@@ -1,7 +1,7 @@
 # src/security/guardrails.py
 
-import re
 import html
+import re
 
 BLOCK_PATTERNS = [
     r"ignore previous instructions",

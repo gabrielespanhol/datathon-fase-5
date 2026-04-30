@@ -1,19 +1,17 @@
 # evaluation/evaluate_all.py
-import os
 import json
 import re
 from pathlib import Path
 from typing import Any
 
 import mlflow.sklearn
-from datasets import Dataset
-from ragas import evaluate
+import numpy as np
 from ragas.embeddings import BaseRagasEmbeddings
 from sentence_transformers import SentenceTransformer
+
 from src.agent.local_llm import LocalLLM
 from src.agent.rag_pipeline import SimpleRAGPipeline
 from src.agent.simple_agent import SimpleFraudAgent
-import numpy as np
 
 GOLDEN_SET_PATH = Path("data/golden_set/golden_set.json")
 OUTPUT_PATH = Path("evaluation/evaluation_results.json")
@@ -123,7 +121,6 @@ def run_agent_on_golden_set(
     return results
 
 
-import numpy as np
 
 
 def cosine_similarity(a: list[float], b: list[float]) -> float:

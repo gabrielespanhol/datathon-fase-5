@@ -1,13 +1,12 @@
 import logging
+import shutil
+from pathlib import Path
 
 import mlflow
-from mlflow.tracking import MlflowClient
-from sklearn.metrics import roc_auc_score
-from src.models.baseline import run_baseline
-from pathlib import Path
-import shutil
 import mlflow.sklearn
+from sklearn.metrics import roc_auc_score
 
+from src.models.baseline import run_baseline
 
 CHAMPION_PATH = Path("src/models/fraud_detection")
 

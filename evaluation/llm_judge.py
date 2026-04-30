@@ -2,6 +2,7 @@
 
 import json
 from typing import Dict, List
+
 from src.agent.simple_agent import SimpleFraudAgent
 
 

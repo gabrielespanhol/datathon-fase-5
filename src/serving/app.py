@@ -1,7 +1,7 @@
 import logging
 import time
 from contextlib import asynccontextmanager
-import os
+
 import mlflow
 import pandas as pd
 from fastapi import FastAPI, HTTPException, Response
@@ -9,6 +9,7 @@ from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from pydantic import BaseModel, Field
 
 from src.agent.rag_pipeline import SimpleRAGPipeline
+from src.agent.simple_agent import SimpleFraudAgent
 from src.features.feature_engineering import build_features
 from src.monitoring.metrics import (
     FRAUD_PREDICTIONS,
@@ -18,9 +19,7 @@ from src.monitoring.metrics import (
     REQUEST_ERRORS,
     REQUEST_LATENCY,
 )
-from src.agent.simple_agent import SimpleFraudAgent
-from src.security.guardrails import validate_input, sanitize_output, validate_output
-
+from src.security.guardrails import sanitize_output, validate_input
 
 logger = logging.getLogger(__name__)
 

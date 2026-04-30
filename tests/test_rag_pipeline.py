@@ -1,10 +1,10 @@
-import pytest
+from unittest.mock import patch
+
 import numpy as np
-from unittest.mock import MagicMock, patch
-from pathlib import Path
+import pytest
 
 # Ajuste conforme o nome do seu arquivo real
-from src.agent.rag_pipeline import SimpleRAGPipeline, RetrievedChunk
+from src.agent.rag_pipeline import SimpleRAGPipeline
 
 
 @pytest.fixture
