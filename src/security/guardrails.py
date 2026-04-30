@@ -92,8 +92,61 @@ def sanitize_output(text: str) -> str:
     return escaped
 
 
+PII_PATTERNS = [
+    # E-mail
+    r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b",
+    # CPF: 000.000.000-00 ou 00000000000
+    r"\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b",
+    # CNPJ: 00.000.000/0000-00 ou 00000000000000
+    r"\b\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}\b",
+    # Telefone BR simples
+    r"\b(?:\+55\s?)?(?:\(?\d{2}\)?\s?)?(?:9\s?)?\d{4}-?\d{4}\b",
+    # Cartão de crédito básico
+    r"\b(?:\d[ -]*?){13,19}\b",
+    # Chaves comuns
+    r"\b(?:api[_-]?key|token|secret|password)\s*[:=]\s*['\"]?[A-Za-z0-9_\-\.]{16,}\b",
+]
+
+
+def _has_pii(text: str) -> bool:
+    """Detecta possível vazamento de PII ou credenciais."""
+    normalized = _normalize_text(text)
+
+    for pattern in PII_PATTERNS:
+        if re.search(pattern, normalized, flags=re.IGNORECASE):
+            return True
+
+    return False
+
+
+def _looks_like_credit_card(text: str) -> bool:
+    """Valida possível cartão usando Luhn para reduzir falso positivo."""
+    digits = re.sub(r"\D", "", text)
+
+    if not 13 <= len(digits) <= 19:
+        return False
+
+    total = 0
+    reverse_digits = digits[::-1]
+
+    for i, digit in enumerate(reverse_digits):
+        n = int(digit)
+        if i % 2 == 1:
+            n *= 2
+            if n > 9:
+                n -= 9
+        total += n
+
+    return total % 10 == 0
+
+
+def _has_credit_card(text: str) -> bool:
+    candidates = re.findall(r"\b(?:\d[ -]*?){13,19}\b", text)
+    return any(_looks_like_credit_card(candidate) for candidate in candidates)
+
+
 def validate_output(text: str) -> bool:
-    """Valida se output parece seguro para exibição."""
+    """Valida se output é seguro para exibição e não vaza PII."""
     normalized = _normalize_text(text)
 
     if not normalized:
@@ -102,4 +155,13 @@ def validate_output(text: str) -> bool:
     if len(normalized) > MAX_OUTPUT_LENGTH * 2:
         return False
 
-    return not _matches_any(normalized, DANGEROUS_OUTPUT_PATTERNS)
+    if _matches_any(normalized, DANGEROUS_OUTPUT_PATTERNS):
+        return False
+
+    if _has_pii(normalized):
+        return False
+
+    if _has_credit_card(normalized):
+        return False
+
+    return True

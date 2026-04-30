@@ -17,7 +17,7 @@ COPY mlflow.db /app/mlflow.db
 RUN pip install torch==2.3.1+cu121 torchvision==0.18.1+cu121 torchaudio==2.3.1+cu121 \
     --index-url https://download.pytorch.org/whl/cu121
 
-RUN pip install -e ".[ml,awq,config,async,utils,serialization]"
+RUN pip install -e ".[awq,config,async,utils,serialization]"
 
 EXPOSE 8000
 

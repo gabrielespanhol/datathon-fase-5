@@ -33,7 +33,7 @@ freeze:
 install-all:
 	pip install --upgrade pip setuptools wheel
 	pip install torch==2.3.1+cu121 torchvision==0.18.1+cu121 torchaudio==2.3.1+cu121 --index-url $(PYTORCH_INDEX)
-	pip install -e ".[dev,ml,awq,celery,dvc,config,cli,async,utils,serialization,graph]"
+	pip install -e ".[dev,awq,celery,dvc,config,cli,async,utils,serialization,graph]"
 
 mlflow:
 	mlflow ui
