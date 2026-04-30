@@ -88,14 +88,13 @@ def test_ask_flow(tmp_path, mock_dependencies):
     assert "score" in response["sources"][0]
 
 
-def test_chunk_text_logic():
+def test_chunk_text_logic(mock_dependencies):
     """Teste isolado da lógica de overlap e tamanho de chunk."""
     pipeline = SimpleRAGPipeline(docs_paths=[], chunk_size=10, chunk_overlap=2)
-    text = "abcdefghijklmnop"  # 16 caracteres
+    text = "abcdefghijklmnop"
 
     chunks = pipeline._chunk_text(text)
 
-    # Chunk 1: "abcdefghij" (10)
-    # Start: 10 - 2 = 8. Chunk 2: "ijklmnop" (8)
     assert len(chunks) == 2
     assert chunks[0] == "abcdefghij"
+    assert chunks[1] == "ijklmnop"

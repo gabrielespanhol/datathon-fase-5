@@ -9,6 +9,18 @@ from src.serving.app import app
 client = TestClient(app)
 
 
+@pytest.fixture
+def mock_agent_dependencies():
+    with (
+        patch("src.serving.app.SimpleRAGPipeline") as mock_rag_pipeline,
+        patch("src.serving.app.SimpleFraudAgent") as mock_simple_agent,
+    ):
+        mock_rag_pipeline.return_value = MagicMock()
+        mock_simple_agent.return_value = MagicMock()
+
+        yield mock_rag_pipeline, mock_simple_agent
+
+
 @pytest.fixture(autouse=True)
 def reset_metrics():
     """Reseta as métricas do Prometheus antes de cada teste."""
@@ -34,18 +46,17 @@ def mock_model():
 # --- Testes de Ciclo de Vida (Lifespan/MLflow) ---
 
 
-def test_lifespan_startup_success():
-    # Mockamos o load_model que usa MLflow
+def test_lifespan_startup_success(mock_agent_dependencies):
     with patch("src.serving.app.mlflow.sklearn.load_model") as mock_mlflow:
         mock_mlflow.return_value = MagicMock()
+
         with TestClient(app) as ac:
-            # Ao entrar no contexto, o lifespan é executado
             assert ac.get("/health").status_code == 200
+
         mock_mlflow.assert_called_once()
 
 
-def test_lifespan_startup_fail():
-    # Simula erro de conexão ou modelo inexistente no MLflow
+def test_lifespan_startup_fail(mock_agent_dependencies):
     with patch(
         "src.serving.app.mlflow.sklearn.load_model",
         side_effect=Exception("MLflow Error"),
@@ -53,6 +64,7 @@ def test_lifespan_startup_fail():
         with pytest.raises(RuntimeError) as exc:
             with TestClient(app):
                 pass
+
     assert "Modelo não disponível no MLflow" in str(exc.value)
 
 
